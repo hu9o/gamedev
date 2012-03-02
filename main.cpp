@@ -6,6 +6,7 @@ int main()
 {
     // Create the main window
     sf::RenderWindow App(sf::VideoMode(800, 600), "SFML window");
+    App.SetFramerateLimit(25);
 
     // Load a sprite to display
     Map carte(4, 4);
@@ -31,8 +32,6 @@ int main()
 
         // Update the window
         App.Display();
-
-        sf::Sleep(0.04);
     }
 
     return EXIT_SUCCESS;
