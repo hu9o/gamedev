@@ -2,7 +2,8 @@
 
 #include <SFML/Graphics.hpp>
 
-Case::Case()
+Case::Case(Map& map) :
+    m_map(map)
 {
     //ctor
 }

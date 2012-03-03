@@ -24,17 +24,23 @@ Map::Map(int w, int h) :
         {
             Case*& maCase = m_map[i][j];
 
-            maCase = new Case();
+            maCase = new Case(*this);
 
+            // tileset et zone à prendre (src_dst)
             maCase->SetImage(m_tileset);
-            maCase->SetSubRect(sf::IntRect(0*96, 0, 1*96, 64));
+            maCase->SetSubRect(sf::IntRect(0*Case::WIDTH,
+                                           0,
+                                           1*Case::WIDTH,
+                                           Case::HEIGHT));
 
             // isométrie!
             sf::Vector2<float> v(i, j);
             toIso(v);
             maCase->SetPosition(v.x, v.y);
 
-            std::cout << i << ", " << j << std::endl;
+            // affiche coordonnées avant/après iso.
+            std::cout << i   << ", " << j   << " => "
+                      << v.x << ", " << v.y << std::endl;
         }
     }
 
@@ -45,7 +51,7 @@ Map::Map(int w, int h) :
 
 Map::~Map()
 {
-    // vide
+    // vide la map
 
     for (int i = 0; i<m_w; i++)
     {
@@ -68,6 +74,7 @@ void Map::loadTileset(std::string path)
     m_tileset.SetSmooth(false);
 }
 
+
 void Map::affiche(sf::RenderWindow& app)
 {
     for (int i = 0; i<m_w; i++)
@@ -79,6 +86,7 @@ void Map::affiche(sf::RenderWindow& app)
     }
 }
 
+
 void Map::toIso(sf::Vector2<float>& v)
 {
 	float a = std::atan2(v.y, v.x);
@@ -89,20 +97,20 @@ void Map::toIso(sf::Vector2<float>& v)
 	v.x = std::cos(a) * d;				// retour en cartésien
 	v.y = std::sin(a) * d;
 
-	v.x *= 1.414 * 48;
-	v.y *= 1.414 * 32;
+	v.x *= M_SQRT2 * (Case::WIDTH/2);
+	v.y *= M_SQRT2 * (Case::HEIGHT/2);
 
-	v.x += 320; // ajustement
-	v.y += 160; // ajustement
+	v.x += ( SCREEN_W - Case::WIDTH )/2;                        // ajustement
+	v.y += ( SCREEN_H - Case::HEIGHT * std::sqrt(m_w*m_h) )/2; // ajustement
 }
 
 void Map::fromIso(sf::Vector2<float>& v)
 {
-	v.x -= 320; // ajustement
-	v.y -= 160; // ajustement
+	v.x -= ( SCREEN_W - Case::WIDTH )/2;                        // ajustement
+	v.y -= ( SCREEN_H - Case::HEIGHT * std::sqrt(m_w*m_h) )/2; // ajustement
 
-	v.x /= 1.414 * 48;
-	v.y /= 1.414 * 32;
+	v.x /= M_SQRT2 * (Case::WIDTH/2);
+	v.y /= M_SQRT2 * (Case::HEIGHT/2);
 
 	float a = std::atan2(v.y, v.x);
 	float d = std::sqrt(v.x*v.x + v.y*v.y);		// en polaire
