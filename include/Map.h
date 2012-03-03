@@ -21,6 +21,6 @@ class Map
 
         void loadTileset(std::string);
 
-        sf::Vector2<int> toIso(int x, int y);
-        sf::Vector2<int> fromIso(int x, int y);
+        void toIso(sf::Vector2<float>& v);
+        void fromIso(sf::Vector2<float>& v);
 };

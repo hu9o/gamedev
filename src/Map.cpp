@@ -27,8 +27,12 @@ Map::Map(int w, int h) :
             maCase = new Case();
 
             maCase->SetImage(m_tileset);
-            maCase->SetPosition(i*96, j*64);
-            maCase->SetSubRect(sf::IntRect(3*96, 0, 4*96, 64));
+            maCase->SetSubRect(sf::IntRect(0*96, 0, 1*96, 64));
+
+            // isométrie!
+            sf::Vector2<float> v(i, j);
+            toIso(v);
+            maCase->SetPosition(v.x, v.y);
 
             std::cout << i << ", " << j << std::endl;
         }
@@ -61,6 +65,7 @@ Map::~Map()
 void Map::loadTileset(std::string path)
 {
     m_tileset.LoadFromFile(path);
+    m_tileset.SetSmooth(false);
 }
 
 void Map::affiche(sf::RenderWindow& app)
@@ -74,48 +79,36 @@ void Map::affiche(sf::RenderWindow& app)
     }
 }
 
-sf::Vector2<int> Map::toIso(int x, int y)
+void Map::toIso(sf::Vector2<float>& v)
 {
-    //x += w/2 - 0.5;
-    //y -= h/2 - 0.5;
+	float a = std::atan2(v.y, v.x);
+	float d = std::sqrt(v.x*v.x + v.y*v.y);		// en polaire
 
-	y *= 48;
-	x *= 48;
+	a += M_PI / 4;						        // rajoute 45°
 
-	float a = std::atan2(y, x);
-	int d = std::sqrt(x*x + y*y);		// en polaire
+	v.x = std::cos(a) * d;				// retour en cartésien
+	v.y = std::sin(a) * d;
 
-	a += M_PI / 4;						// rajoute 45°
+	v.x *= 1.414 * 48;
+	v.y *= 1.414 * 32;
 
-	x = std::cos(a) * d;				// retour en cartésien
-	y = std::sin(a) * d;
-
-	y *= 0.45;
-	x *= 34.8 / 48.0;					// "aplatit", et ajuste
-
-	x += 48 * (m_w/2 - 0.5); // ajustement
-	//y -= 210; // ajustement
+	v.x += 320; // ajustement
+	v.y += 160; // ajustement
 }
 
-sf::Vector2<int> Map::fromIso(int x, int y)
+void Map::fromIso(sf::Vector2<float>& v)
 {
-	x -= 48 * (m_w/2 - 0.5); // ajustement
-	//y += 210; // ajustement
+	v.x -= 320; // ajustement
+	v.y -= 160; // ajustement
 
-	y /= 0.45;
-	x /= 34.8 / 48.0;
+	v.x /= 1.414 * 48;
+	v.y /= 1.414 * 32;
 
-	float a = std::atan2(y, x);			// en polaire
-	int d = std::sqrt(x*x + y*y);
+	float a = std::atan2(v.y, v.x);
+	float d = std::sqrt(v.x*v.x + v.y*v.y);		// en polaire
 
-	a -= M_PI / 4;						// enlève les 45°
+	a -= M_PI / 4;						        // enlève 45°
 
-	x = std::cos(a) * d;
-	y = std::sin(a) * d;				// retour en cartésien
-
-	float _y = (float)y / 48 + 0.5;
-	float _x = (float)x / 48 - 0.5;
-
-	y = (_y < 0)? _y-1 : _y;
-	x = (_x < 0)? _x-1 : _x;
+	v.x = std::cos(a) * d;				// retour en cartésien
+	v.y = std::sin(a) * d;
 }
