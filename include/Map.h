@@ -36,8 +36,9 @@ class Map
         /// celle-ci
         void registerEntity(Entity& e);
 
-        /// handles click events
-        void click(sf::Event evt);
+        /// handles mouse events
+        void mouseDown(sf::Event evt);
+        void mouseMove(sf::Event evt);
 
 
     protected:
@@ -49,6 +50,10 @@ class Map
 
         Case*** m_map;
         sf::Image m_tileset;
+
+        sf::Sprite m_curs;
+        sf::Image m_cursImg;
+        sf::Vector2i m_cursPos;
 
         std::vector<Entity*> m_entities;
 
@@ -66,7 +71,7 @@ class Map
           * @authr hu9o
           * @see fromIso()
           */
-        void toIso(sf::Vector2<float>& v);
+        void toIso(sf::Vector2f& v);
 
         /**
           * Inverse de la fonction Map::toIso()
@@ -76,5 +81,8 @@ class Map
           * @see toIso()
           */
         void fromIso(sf::Vector2<float>& v);
+
+        void setCursorPos(sf::Vector2f v);
+        sf::Vector2f getCursorPos();
 
 };

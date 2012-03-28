@@ -1,4 +1,5 @@
 #include "Map.h"
+#include <cmath>
 
 Map::Map(int w, int h) :
     m_map(NULL),
@@ -40,7 +41,7 @@ Map::Map(int w, int h) :
             maCase->setPositionOnTileset(std::rand()%2, 0);
 
             // isométrie!
-            sf::Vector2<float> v(i, j);
+            sf::Vector2f v(i, j);
             toIso(v);
             maCase->SetPosition(v.x, v.y);
 
@@ -51,6 +52,10 @@ Map::Map(int w, int h) :
     }
 
     ////
+
+    // curseur
+    m_cursImg.LoadFromFile("gfx/curs.png");
+    m_curs.SetImage(m_cursImg);
 
 }
 
@@ -97,13 +102,16 @@ void Map::affiche(sf::RenderWindow& app)
         }
     }
 
+    // affiche le curseur
+    app.Draw(m_curs);
+
     // affiche les entités
     std::vector<Entity*>::iterator it = m_entities.begin();
     while (it != m_entities.end())
     {
         // isométrie
-        sf::Vector2<int> pos1 = (*it)->getPosition();
-        sf::Vector2<float> pos = sf::Vector2<float>(pos1.x, pos1.y);
+        sf::Vector2i pos1 = (*it)->getPosition();
+        sf::Vector2f pos = sf::Vector2f(pos1.x, pos1.y);
         toIso(pos);
 
         // affichage
@@ -119,21 +127,47 @@ void Map::registerEntity(Entity& e)
     m_entities.push_back(&e);
 }
 
-void Map::click(sf::Event evt)
+void Map::mouseDown(sf::Event evt)
 {
     if (evt.MouseButton.Button == sf::Mouse::Left)
     {
-        sf::Vector2<float> pos = sf::Vector2<float>(evt.MouseButton.X,
-                                                    evt.MouseButton.Y);
 
-        fromIso(pos);
-
-        std::cout << pos.x << ", " << pos.y << std::endl;
+        std::cout << m_cursPos.x << ", " << m_cursPos.y << std::endl;
 
     }
 }
 
-void Map::toIso(sf::Vector2<float>& v)
+void Map::mouseMove(sf::Event evt)
+{
+    setCursorPos(sf::Vector2f(evt.MouseMove.X, evt.MouseMove.Y));
+}
+
+void Map::setCursorPos(sf::Vector2f v)
+{
+    // coords normales
+    fromIso(v);
+    v.x--; // ajustement (??)
+
+    m_cursPos.x = round(v.x);
+    m_cursPos.y = round(v.y);
+
+    // reconvertit en iso
+    sf::Vector2f v2(m_cursPos.x, m_cursPos.y);
+    toIso(v2);
+    m_curs.SetPosition(v2);
+}
+
+sf::Vector2f Map::getCursorPos()
+{
+    return m_curs.GetPosition();
+}
+
+bool pathFind()
+{
+
+}
+
+void Map::toIso(sf::Vector2f& v)
 {
     float a = std::atan2(v.y, v.x);
     float d = std::sqrt(v.x*v.x + v.y*v.y);        // en polaire

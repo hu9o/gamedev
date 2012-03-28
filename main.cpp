@@ -28,7 +28,10 @@ int main()
                 App.Close();
 
             if (evt.Type == sf::Event::MouseButtonPressed)
-                carte.click(evt);
+                carte.mouseDown(evt);
+
+            if (evt.Type == sf::Event::MouseMoved)
+                carte.mouseMove(evt);
         }
 
         // Clear screen

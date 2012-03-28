@@ -21,7 +21,9 @@ class Character : public Entity
         virtual ~Character();
 
         /// affiche le perso sur une RenderWindow
-        void affiche(sf::RenderWindow& app, sf::Vector2<float>& pos);
+        void affiche(sf::RenderWindow& app, sf::Vector2f& pos);
+
+        bool gotoPos(int x,  int y);
 
     protected:
         sf::Image m_image;

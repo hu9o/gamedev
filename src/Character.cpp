@@ -17,8 +17,13 @@ Character::~Character()
     //dtor
 }
 
-void Character::affiche(sf::RenderWindow& app, sf::Vector2<float>& pos)
+void Character::affiche(sf::RenderWindow& app, sf::Vector2f& pos)
 {
     m_sprite.SetPosition(pos);
     app.Draw(m_sprite);
+}
+
+bool Character::gotoPos(int x,  int y)
+{
+
 }
