@@ -2,13 +2,24 @@
 
 #include <SFML/Graphics.hpp>
 
-Case::Case(Map& map) :
-    m_map(map)
+Case::Case(Map& map, int x, int y) :
+    m_map(map),
+    m_x(x),
+    m_y(y)
 {
-    //ctor
+
 }
 
 Case::~Case()
 {
     //dtor
+}
+
+void Case::setPositionOnTileset(int x, int y)
+{
+    // Zone du tileset à afficher
+    SetSubRect(sf::IntRect(x*Case::WIDTH,
+                           y*Case::HEIGHT,
+                           (x+1)*Case::WIDTH,
+                           (y+1)*Case::HEIGHT));
 }

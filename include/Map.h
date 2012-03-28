@@ -2,11 +2,14 @@
 
 #include <cmath>
 #include <iostream>
+#include <vector>
+#include "Entity.h"
 #include "Case.h"
 
 // taille de l'affichage (à revoir?)
 extern const int SCREEN_W, SCREEN_H;
 
+class Entity;
 
 /**
   * Classe Map
@@ -29,6 +32,13 @@ class Map
         /// affiche les tiles sur une RenderWindow
         void affiche(sf::RenderWindow& app);
 
+        /// ajoute une Entity à la Map, qui sera affichée en même temps que
+        /// celle-ci
+        void registerEntity(Entity& e);
+
+        /// handles click events
+        void click(sf::Event evt);
+
 
     protected:
 
@@ -40,6 +50,8 @@ class Map
         Case*** m_map;
         sf::Image m_tileset;
 
+        std::vector<Entity*> m_entities;
+
 
         // MÉTHODES
 
@@ -50,12 +62,6 @@ class Map
           * Convertit du repère cartésien au repère isométrique
           * (modifie l'entrée, ne renvoie rien)
           *
-          * ex:
-          *     (0, 0) => (320,     160)
-          *     (0, 1) => (272.007, 191.995)
-          *     (1, 0) => (367.993, 191.995)
-          *     (1, 1) => (320,     223.99)
-          *
           * @param v vecteur contenant les coordonnées (x, y)
           * @authr hu9o
           * @see fromIso()
@@ -64,6 +70,7 @@ class Map
 
         /**
           * Inverse de la fonction Map::toIso()
+          *
           * @param v vecteur contenant les coordonnées (x, y)
           * @authr hu9o
           * @see toIso()
