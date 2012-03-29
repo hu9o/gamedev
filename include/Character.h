@@ -21,7 +21,7 @@ class Character : public Entity
         virtual ~Character();
 
         /// affiche le perso sur une RenderWindow
-        void affiche(sf::RenderWindow& app, sf::Vector2f& pos);
+        void affiche(sf::RenderWindow& app);
         void move();
 
         bool gotoPos(sf::Vector2i pos);
@@ -31,6 +31,9 @@ class Character : public Entity
         sf::Sprite m_sprite;
 
         std::vector<sf::Vector2i> m_movementStack;
+
+
+        sf::Vector2f spritePos(sf::Vector2i v);
     private:
 };
 

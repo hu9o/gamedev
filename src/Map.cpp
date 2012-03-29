@@ -108,17 +108,17 @@ void Map::affiche(sf::RenderWindow& app)
     app.Draw(m_curs);
 
     // affiche les entités
-    std::vector<Entity*>::iterator it = m_entities.begin();
-    while (it != m_entities.end())
+    for (std::vector<Entity*>::iterator it = m_entities.begin();
+                                        it < m_entities.end();
+                                      ++it)
     {
-        // isométrie
-        sf::Vector2i pos1 = (*it)->getPosition();
-        sf::Vector2f pos = sf::Vector2f(pos1.x, pos1.y);
-        toIso(pos);
+        //// isométrie
+        //sf::Vector2i pos1 = (*it)->getPosition();
+        //sf::Vector2f pos = sf::Vector2f(pos1.x, pos1.y);
+        //toIso(pos);
 
         // affichage
-        (*it)->affiche(app, pos);
-        it++;
+        (*it)->affiche(app);
     }
 
 }
@@ -207,8 +207,8 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
     {
         ////std::cout << "loop" << std::endl;
         ////std::cout << "open:   " << open.size()   << std::endl;
-        ////for (int i=0; i<open.size(); i++) std::cout << '(' << open[i]->x << ", " << open[i]->y << "), ";
-        ////std::cout << std::endl;
+        for (int i=0; i<open.size(); i++) std::cout << '(' << open[i]->x << ", " << open[i]->y << "), ";
+        std::cout << std::endl;
         ////std::cout << "closed: " << closed.size() << std::endl;
         ////for (int i=0; i<closed.size(); i++) std::cout << '(' << closed[i]->x << ", " << closed[i]->y << "), ";
         ////std::cout << std::endl;
@@ -223,9 +223,8 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
         currentIt = it;
         current = *currentIt;
         int lowerF = current->getF();
-        ++it;
 
-        while (it != open.end())
+        for (++it ; it != open.end(); ++it)
         {
             if ((*it)->getF() < lowerF)
             {
@@ -233,7 +232,6 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
                 current = *currentIt;
                 lowerF = current->getF();
             }
-            ++it;
         }
 
         // affiche 'current':
@@ -255,7 +253,16 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
             {
                 // ajoute le noeud aux voisins si ce n'est pas le noeud courant
                 // et si le noeud est traversable
-                if ((i || j)
+                // et s'il n'est pas dans la lsite fermée
+                bool notInClosed = true;
+                for (it = closed.begin(); it!=closed.end() && notInClosed; ++it)
+                {
+                    if ((*it)->x == current->x+i &&
+                        (*it)->y == current->y+j)
+                    notInClosed = false;
+                }
+
+                if ((i || j) && notInClosed
                     && isWalkable(current->x+i, current->y+j)
                     && ( (!i || !j) || (isWalkable(current->x, current->y+j)
                                         && isWalkable(current->x+i, current->y))
@@ -272,14 +279,14 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
         }
 
         // boucle sur les voisins...
-        it = neighbors.begin();
-        while (it != neighbors.end())
+
+        for (it = neighbors.begin(); it != neighbors.end(); ++it)
         {
             Node* neigh = *it;
             bool found = false;
 
-            std::vector<Node*>::iterator open_n = open.begin();
-            while (open_n != open.end())
+            std::vector<Node*>::iterator open_n;
+            for (open_n = open.begin(); open_n != open.end(); ++open_n)
             {
                 if ((*open_n)->x == neigh->x &&
                     (*open_n)->y == neigh->y)
@@ -287,8 +294,6 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
                     found = true;
                     break;
                 }
-
-                ++open_n;
             }
 
             // si le voisin est dans la liste ouverte, plus court chemin?
@@ -308,7 +313,6 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
                 open.push_back(neigh);
             }
 
-            ++it;
         }
 
         if (current->x == target.x && current->y == target.y)
@@ -327,18 +331,25 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
     }
     ////std::cout << "LOZEVOL";
 
-    ////std::cout << "chemin: ";
+    //on remonte par parents depuis target
     std::vector<sf::Vector2i> res;
     Node* node = &target;
+    bool foundPath;
     while (node != NULL)
     {
-        ////std::cout <<'('<<node->x<<", "<<node->y<<"), ";
         res.push_back(sf::Vector2i(node->x, node->y));
+
+        // si le noeud parent est nul, on a soit target soit source.
+        // si c'est source, le chemin a été trouvé
+        if (node->parent == NULL)
+            foundPath = (node == &source);
+
         node = node->parent;
     }
     ////std::cout << std::endl;
 
-    return res;
+    // si un chemin a été trouvé, le renvoie. Sinon renvoie une liste vide.
+    return foundPath? res : std::vector<sf::Vector2i>();
 }
 
 bool Map::isWalkable(int x, int y)
@@ -351,7 +362,7 @@ void Map::toIso(sf::Vector2f& v)
     float a = std::atan2(v.y, v.x);
     float d = std::sqrt(v.x*v.x + v.y*v.y);        // en polaire
 
-    a += M_PI / 4;                                // rajoute 45°
+    a += M_PI_4;                                // rajoute 45°
 
     v.x = std::cos(a) * d;                // retour en cartésien
     v.y = std::sin(a) * d;
@@ -374,7 +385,7 @@ void Map::fromIso(sf::Vector2<float>& v)
     float a = std::atan2(v.y, v.x);
     float d = std::sqrt(v.x*v.x + v.y*v.y);        // en polaire
 
-    a -= M_PI / 4;                                // enlève 45°
+    a -= M_PI_4;                                // enlève 45°
 
     v.x = std::cos(a) * d;                // retour en cartésien
     v.y = std::sin(a) * d;

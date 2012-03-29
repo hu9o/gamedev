@@ -48,6 +48,25 @@ class Map
         std::vector<sf::Vector2i> pathFind (sf::Vector2i sourcePos,
                                             sf::Vector2i targetPos);
 
+        /**
+          * Convertit du repère cartésien au repère isométrique
+          * (modifie l'entrée, ne renvoie rien)
+          *
+          * @param v vecteur contenant les coordonnées (x, y)
+          * @authr hu9o
+          * @see fromIso()
+          */
+        void toIso(sf::Vector2f& v);
+
+        /**
+          * Inverse de la fonction Map::toIso()
+          *
+          * @param v vecteur contenant les coordonnées (x, y)
+          * @authr hu9o
+          * @see toIso()
+          */
+        void fromIso(sf::Vector2<float>& v);
+
     protected:
 
     private:
@@ -94,25 +113,6 @@ class Map
 
         /// charge le tileset
         void loadTileset(std::string);
-
-        /**
-          * Convertit du repère cartésien au repère isométrique
-          * (modifie l'entrée, ne renvoie rien)
-          *
-          * @param v vecteur contenant les coordonnées (x, y)
-          * @authr hu9o
-          * @see fromIso()
-          */
-        void toIso(sf::Vector2f& v);
-
-        /**
-          * Inverse de la fonction Map::toIso()
-          *
-          * @param v vecteur contenant les coordonnées (x, y)
-          * @authr hu9o
-          * @see toIso()
-          */
-        void fromIso(sf::Vector2<float>& v);
 
         void setCursorPos(sf::Vector2f v);
         sf::Vector2f getCursorPos();

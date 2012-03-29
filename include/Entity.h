@@ -21,7 +21,7 @@ class Entity
         Entity(Map& map);
         virtual ~Entity();
 
-        virtual void affiche(sf::RenderWindow& app, sf::Vector2f& pos) = 0;
+        virtual void affiche(sf::RenderWindow& app) = 0;
 
         sf::Vector2i getPosition();
         void setPosition(sf::Vector2i& pos);
