@@ -22,12 +22,15 @@ class Character : public Entity
 
         /// affiche le perso sur une RenderWindow
         void affiche(sf::RenderWindow& app, sf::Vector2f& pos);
+        void move();
 
-        bool gotoPos(int x,  int y);
+        bool gotoPos(sf::Vector2i pos);
 
     protected:
         sf::Image m_image;
         sf::Sprite m_sprite;
+
+        std::vector<sf::Vector2i> m_movementStack;
     private:
 };
 

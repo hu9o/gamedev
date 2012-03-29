@@ -10,6 +10,7 @@ Character::Character(Map& map) : Entity(map)
     }
     m_image.SetSmooth(false);
     m_sprite.SetImage(m_image);
+    m_map.registerCharacter(*this);
 }
 
 Character::~Character()
@@ -19,11 +20,25 @@ Character::~Character()
 
 void Character::affiche(sf::RenderWindow& app, sf::Vector2f& pos)
 {
+    pos.y -= 32; //TODO: Améliorer, ça: pourquoi ajouter 32? (hauteur du perso)
+
     m_sprite.SetPosition(pos);
     app.Draw(m_sprite);
+
+    //TODO: mettre ça autrepart
+    move();
 }
 
-bool Character::gotoPos(int x,  int y)
+bool Character::gotoPos(sf::Vector2i pos)
 {
+    m_movementStack = m_map.pathFind(getPosition(), pos);
+}
 
+void Character::move()
+{
+    if (!m_movementStack.empty())
+    {
+        m_pos = *(m_movementStack.end() - 1);
+        m_movementStack.pop_back();
+    }
 }

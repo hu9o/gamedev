@@ -21,16 +21,16 @@ class Entity
         Entity(Map& map);
         virtual ~Entity();
 
-        virtual void affiche(sf::RenderWindow& app, sf::Vector2<float>& pos) = 0;
+        virtual void affiche(sf::RenderWindow& app, sf::Vector2f& pos) = 0;
 
-        sf::Vector2<int> getPosition();
-        void setPosition(sf::Vector2<int>& pos);
+        sf::Vector2i getPosition();
+        void setPosition(sf::Vector2i& pos);
         void setPosition(int x, int y);
 
     protected:
         /// carte sur laquelle est le perso
         Map& m_map;
-        sf::Vector2<int> m_pos;
+        sf::Vector2i m_pos;
     private:
 };
 

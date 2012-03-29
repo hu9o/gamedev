@@ -7,7 +7,7 @@ Case::Case(Map& map, int x, int y) :
     m_x(x),
     m_y(y)
 {
-
+    m_walkable = true;
 }
 
 Case::~Case()
@@ -22,4 +22,12 @@ void Case::setPositionOnTileset(int x, int y)
                            y*Case::HEIGHT,
                            (x+1)*Case::WIDTH,
                            (y+1)*Case::HEIGHT));
+
+    //TODO: C'EST DU TEST!
+    if (x == 1) m_walkable = false;
+}
+
+bool Case::isWalkable()
+{
+    return m_walkable;
 }

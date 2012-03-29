@@ -30,6 +30,7 @@ class Case : public sf::Sprite
 
         /// Donne la position de la case sur le tileset (et non sur la map)
         void setPositionOnTileset(int x, int y);
+        bool isWalkable();
 
     protected:
         /// Carte parente
@@ -40,7 +41,7 @@ class Case : public sf::Sprite
         int m_x, m_y;
 
         /// Case franchissable?
-        bool m_occupee;
+        bool m_walkable;
 
     private:
 };

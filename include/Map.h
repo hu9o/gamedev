@@ -10,6 +10,7 @@
 extern const int SCREEN_W, SCREEN_H;
 
 class Entity;
+class Character;
 
 /**
   * Classe Map
@@ -35,15 +36,45 @@ class Map
         /// ajoute une Entity à la Map, qui sera affichée en même temps que
         /// celle-ci
         void registerEntity(Entity& e);
+        void registerCharacter(Character& c);
 
         /// handles mouse events
         void mouseDown(sf::Event evt);
         void mouseMove(sf::Event evt);
 
+        /// la case est-elle traversable?
+        bool isWalkable(int x, int y);
+
+        std::vector<sf::Vector2i> pathFind (sf::Vector2i sourcePos,
+                                            sf::Vector2i targetPos);
 
     protected:
 
     private:
+
+        class Node
+        {
+            public:
+            Node(Node* _p, int _x, int _y)
+             : parent(_p), x(_x), y(_y)
+            {
+                if (parent != NULL)
+                    target = parent->target;
+                else
+                    target = NULL;
+            }
+            int getF() { return g+getH(); }
+            int getH()
+            {
+                return (target != NULL)? abs(x-target->x)+abs(y-target->y) : 0;
+            }
+
+            int x, y;
+            int g;
+            Node* parent;
+            Node* target;
+        };
+
 
         /// largeur et hauteur de la map
         const int m_w, m_h;
@@ -56,6 +87,7 @@ class Map
         sf::Vector2i m_cursPos;
 
         std::vector<Entity*> m_entities;
+        Character* m_character;
 
 
         // MÉTHODES
