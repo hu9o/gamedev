@@ -67,6 +67,8 @@ class Map
           */
         void fromIso(sf::Vector2<float>& v);
 
+        float getElapsedTime();
+
     protected:
 
     private:
@@ -88,10 +90,10 @@ class Map
                 return (target != NULL)? abs(x-target->x)+abs(y-target->y) : 0;
             }
 
-            int x, y;
-            int g;
             Node* parent;
             Node* target;
+            int x, y;
+            int g;
         };
 
 
@@ -100,10 +102,13 @@ class Map
 
         Case*** m_map;
         sf::Image m_tileset;
+        sf::Image m_Objs;
 
         sf::Sprite m_curs;
         sf::Image m_cursImg;
         sf::Vector2i m_cursPos;
+
+        sf::Clock m_clock;
 
         std::vector<Entity*> m_entities;
         Character* m_character;

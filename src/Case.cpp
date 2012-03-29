@@ -24,7 +24,7 @@ void Case::setPositionOnTileset(int x, int y)
                            (y+1)*Case::HEIGHT));
 
     ////TODO: C'EST DU TEST!
-    if (x == 1) m_walkable = false;
+    //if (x == 1) m_walkable = false;
 }
 
 bool Case::isWalkable()

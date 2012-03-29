@@ -3,7 +3,7 @@
 Character::Character(Map& map) : Entity(map)
 {
     // charge image
-    if (!m_image.LoadFromFile("gfx/char.png"))
+    if (!m_image.LoadFromFile("gfx/charset.png"))
     {
         //TODO: Utiliser une exception?
         std::cerr << "Le chargement du tileset a échoué" << std::endl;
@@ -13,6 +13,8 @@ Character::Character(Map& map) : Entity(map)
     m_map.registerCharacter(*this);
 
     m_sprite.SetPosition(spritePos(m_pos));
+    m_dir = 4;
+    m_moving = false;
 }
 
 Character::~Character()
@@ -22,7 +24,10 @@ Character::~Character()
 
 void Character::affiche(sf::RenderWindow& app)
 {
-    //pos.y -= 32; //TODO: Améliorer ça: pourquoi ajouter 32? (hauteur du perso)
+    int imgNb = m_moving? (int)(m_map.getElapsedTime() * 6) % 4 : 0;
+
+    m_sprite.SetSubRect(sf::IntRect( imgNb*32,      m_dir*48,
+                                     imgNb*32 + 32, m_dir*48 + 48 ));
 
     //m_sprite.SetPosition(pos);
     app.Draw(m_sprite);
@@ -34,13 +39,17 @@ void Character::affiche(sf::RenderWindow& app)
 bool Character::gotoPos(sf::Vector2i pos)
 {
     m_movementStack = m_map.pathFind(getPosition(), pos);
+
+    return !m_movementStack.empty();
 }
 
 void Character::move()
 {
-    if (!m_movementStack.empty())
+    m_moving = !m_movementStack.empty();
+
+    if (m_moving)
     {
-        int speed = 4;
+        int speed = 1;
         sf::Vector2i nextPos = *(m_movementStack.end() - 1);
         sf::Vector2f curIsoPos, nextIsoPos, v;
 
@@ -53,6 +62,10 @@ void Character::move()
 
         float a = std::atan2(v.y, v.x);
         float d = std::sqrt(v.x*v.x + v.y*v.y);        // en polaire
+
+        if (d > speed*2) m_dir = (int)((a + M_PI*2) / M_PI_4) % 8;
+
+        //TODO: utiliser 'a' pour donne rla bonne valeur à m_dir (direction)
 
         v.x = std::cos(a) * speed;                // retour en cartésien
         v.y = std::sin(a) * speed;
@@ -72,6 +85,7 @@ sf::Vector2f Character::spritePos(sf::Vector2i v)
 {
     sf::Vector2f v2(v.x, v.y);
     m_map.toIso(v2);
-    v2.y -= 32;
+    v2.x += 8;
+    v2.y -= 26;
     return v2;
 }

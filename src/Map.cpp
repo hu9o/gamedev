@@ -3,10 +3,10 @@
 #include "Character.h"
 
 Map::Map(int w, int h) :
-    m_map(NULL),
-    m_character(NULL),
     m_w(w),
-    m_h(h)
+    m_h(h),
+    m_map(NULL),
+    m_character(NULL)
 {
 
 //    // map de test, en attendant de la charger
@@ -207,10 +207,12 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
     {
         ////std::cout << "loop" << std::endl;
         ////std::cout << "open:   " << open.size()   << std::endl;
-        for (int i=0; i<open.size(); i++) std::cout << '(' << open[i]->x << ", " << open[i]->y << "), ";
-        std::cout << std::endl;
+        ////for (int i=0; i<open.size(); i++)
+        ////    std::cout <<'('<< open[i]->x <<", "<< open[i]->y <<"), ";
+        ////std::cout << std::endl;
         ////std::cout << "closed: " << closed.size() << std::endl;
-        ////for (int i=0; i<closed.size(); i++) std::cout << '(' << closed[i]->x << ", " << closed[i]->y << "), ";
+        ////for (int i=0; i<closed.size(); i++)
+        ////    std::cout <<'('<< closed[i]->x <<", "<< closed[i]->y <<"), ";
         ////std::cout << std::endl;
 
         std::vector<Node*>::iterator it;
@@ -350,6 +352,11 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
 
     // si un chemin a été trouvé, le renvoie. Sinon renvoie une liste vide.
     return foundPath? res : std::vector<sf::Vector2i>();
+}
+
+float Map::getElapsedTime()
+{
+    return m_clock.GetElapsedTime();
 }
 
 bool Map::isWalkable(int x, int y)

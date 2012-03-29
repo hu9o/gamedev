@@ -6,6 +6,8 @@
 
 class Map;
 
+enum Direction { DIR_UPLEFT, DIR_UPRIGHT, DIR_DOWNLEFT, DIR_DOWNRIGHT };
+
 /**
   * Classe Character
   * Hérite de Entity, représente le personnage contrôlé par le joueur.
@@ -29,6 +31,9 @@ class Character : public Entity
     protected:
         sf::Image m_image;
         sf::Sprite m_sprite;
+
+        int m_dir; // remplacer par une enum?
+        bool m_moving;
 
         std::vector<sf::Vector2i> m_movementStack;
 
