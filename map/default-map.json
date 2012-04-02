@@ -1,0 +1,21 @@
+{
+    "tiles" : "default-tiles.json",
+
+    "cases" :
+    [
+        { "char":"%", "terr":"sand", "objs":["skel"] },
+        { "char":"w", "terr":"sand", "objs":["water"] },
+        { "char":"v", "terr":"dirt", "objs":["rocks", "water"] },
+        { "char":"v", "terr":"dirt", "objs":["rocks", "water"] }
+    ],
+
+    "map" :
+    [
+        ". . % . . .",
+        ". . . . . %",
+        ". . . . . .",
+        ". . w w w .",
+        ". . w w w .",
+        "% . . . . ." 
+    ]
+}

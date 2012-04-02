@@ -13,7 +13,8 @@ int main()
     App.SetFramerateLimit(25);
 
     // Load a sprite to display
-    Map carte(6, 6);
+    Map carte(16, 16);
+    carte.loadTest();
     Character perso(carte);
 
     // Start the game loop

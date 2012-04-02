@@ -45,7 +45,7 @@ class Map
         /// la case est-elle traversable?
         bool isWalkable(int x, int y);
 
-        std::vector<sf::Vector2i> pathFind (sf::Vector2i sourcePos,
+        std::vector<sf::Vector2i> findPath (sf::Vector2i sourcePos,
                                             sf::Vector2i targetPos);
 
         /**
@@ -68,6 +68,8 @@ class Map
         void fromIso(sf::Vector2<float>& v);
 
         float getElapsedTime();
+
+        void loadTest();
 
     protected:
 

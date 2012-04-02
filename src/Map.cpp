@@ -1,6 +1,7 @@
 #include "Map.h"
 #include <cmath>
 #include "Character.h"
+#include "JSON.h"
 
 Map::Map(int w, int h) :
     m_w(w),
@@ -40,7 +41,7 @@ Map::Map(int w, int h) :
 
             // tileset et zone à prendre (src_dst)
             maCase->SetImage(m_tileset);
-            maCase->setPositionOnTileset(std::rand()%2, 0);
+            maCase->setPositionOnTileset(0, 0);
 
             // isométrie!
             sf::Vector2f v(i, j);
@@ -48,8 +49,8 @@ Map::Map(int w, int h) :
             maCase->SetPosition(v.x, v.y);
 
             // affiche coordonnées avant/après iso.
-            std::cout << i   << ", " << j   << " => "
-                      << v.x << ", " << v.y << std::endl;
+            //std::cout << i   << ", " << j   << " => "
+            //          << v.x << ", " << v.y << std::endl;
         }
     }
 
@@ -132,19 +133,17 @@ void Map::registerEntity(Entity& e)
 void Map::registerCharacter(Character& c)
 {
     // ajoute à la liste d'entités
-    m_entities.push_back(&c);
     m_character = &c;
 }
 
 void Map::mouseDown(sf::Event evt)
 {
+    // clic droit: déplacer le personnage jusqu'au curseur
     if (evt.MouseButton.Button == sf::Mouse::Left)
     {
-
-        std::cout << m_cursPos.x << ", " << m_cursPos.y << std::endl;
         if (!m_character)
             std::cerr << "merde..." << std::endl;
-        m_character->gotoPos(m_cursPos);
+        m_character->gotoPos(m_cursPos, false);
     }
 }
 
@@ -173,7 +172,7 @@ sf::Vector2f Map::getCursorPos()
     return m_curs.GetPosition();
 }
 
-std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
+std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
                                         sf::Vector2i targetPos)
 {
     // on s'arrête si la liste fermée est vide (pas de chemin)
@@ -205,16 +204,6 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
     bool loop = true;
     while (!open.empty() && loop)
     {
-        ////std::cout << "loop" << std::endl;
-        ////std::cout << "open:   " << open.size()   << std::endl;
-        ////for (int i=0; i<open.size(); i++)
-        ////    std::cout <<'('<< open[i]->x <<", "<< open[i]->y <<"), ";
-        ////std::cout << std::endl;
-        ////std::cout << "closed: " << closed.size() << std::endl;
-        ////for (int i=0; i<closed.size(); i++)
-        ////    std::cout <<'('<< closed[i]->x <<", "<< closed[i]->y <<"), ";
-        ////std::cout << std::endl;
-
         std::vector<Node*>::iterator it;
         std::vector<Node*>::iterator currentIt;
         Node* current = NULL;
@@ -236,12 +225,6 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
             }
         }
 
-        // affiche 'current':
-        ////std::cout << "current: ("
-        ////          << current->x << ", " << current->y
-        ////          << ')' << std::endl;
-
-        //sf::Sleep(1);
 
         // déplace 'current' dans la liste fermée
         open.erase(currentIt);
@@ -323,15 +306,7 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
             ////std::cout << "LOOL\n";
             break;
         }
-        /* efface les cases créées
-        while (!neighbors.empty())
-        {
-            delete *(neighbors.end()-1);
-            neighbors.pop_back();
-        }
-        */
     }
-    ////std::cout << "LOZEVOL";
 
     //on remonte par parents depuis target
     std::vector<sf::Vector2i> res;
@@ -348,7 +323,6 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
 
         node = node->parent;
     }
-    ////std::cout << std::endl;
 
     // si un chemin a été trouvé, le renvoie. Sinon renvoie une liste vide.
     return foundPath? res : std::vector<sf::Vector2i>();
@@ -357,6 +331,30 @@ std::vector<sf::Vector2i> Map::pathFind(sf::Vector2i sourcePos,
 float Map::getElapsedTime()
 {
     return m_clock.GetElapsedTime();
+}
+
+void Map::loadTest()
+{
+    std::cout << "JSON:" << std::endl;
+
+    JSON j("map/default-map.json");
+
+    assert(j.IsObject());
+	assert(j.HasMember("map"));
+	assert(j.HasMember("tiles"));
+	assert(j["tiles"].IsString());
+	printf("tiles path = %s\n", j["tiles"].GetString());
+    assert(j.HasMember("cases"));
+    const js::Value& a = j["cases"];	// Using a reference for consecutive access is handy and faster.
+    assert(a.IsArray());
+
+    for (js::SizeType i = 0; i < a.Size(); i++)
+    {
+        assert(a[i].IsObject());
+
+        printf(" - char: %c; terr: %s;\n", a[i]["char"].GetString()[0], a[i]["terr"].GetString());
+    }
+
 }
 
 bool Map::isWalkable(int x, int y)
