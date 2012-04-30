@@ -10,7 +10,7 @@ int main()
 {
     // Create the main window
     sf::RenderWindow App(sf::VideoMode(SCREEN_W, SCREEN_H), "Projet Gamedev");
-    App.SetFramerateLimit(25);
+    App.setFramerateLimit(25);
 
     // Load a sprite to display
     Map carte(16, 16);
@@ -18,32 +18,31 @@ int main()
     Character perso(carte);
 
     // Start the game loop
-    while (App.IsOpened())
+    while (App.isOpen())
     {
         // Process events
         sf::Event evt;
-        while (App.GetEvent(evt))
+        while (App.pollEvent(evt))
         {
             // Close window : exit
-            if (evt.Type == sf::Event::Closed)
-                App.Close();
+            if (evt.type == sf::Event::Closed)
+                App.close();
 
-            if (evt.Type == sf::Event::MouseButtonPressed)
+            if (evt.type == sf::Event::MouseButtonPressed)
                 carte.mouseDown(evt);
 
-            if (evt.Type == sf::Event::MouseMoved)
+            if (evt.type == sf::Event::MouseMoved)
                 carte.mouseMove(evt);
         }
 
         // Clear screen
-        App.Clear();
-
+        App.clear();
 
         // Draw the sprite
         carte.affiche(App);
 
         // Update the window
-        App.Display();
+        App.display();
     }
 
     return EXIT_SUCCESS;

@@ -30,7 +30,7 @@ class Character : public Entity
         bool gotoPos(sf::Vector2i pos, bool add);
 
     protected:
-        sf::Image m_image;
+        sf::Texture m_image;
         sf::Sprite m_sprite;
 
         float m_speed;
