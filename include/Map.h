@@ -103,11 +103,11 @@ class Map
         const int m_w, m_h;
 
         Case*** m_map;
-        sf::Image m_tileset;
-        sf::Image m_Objs;
+        sf::Texture m_tileset;
+        sf::Texture m_Objs;
 
         sf::Sprite m_curs;
-        sf::Image m_cursImg;
+        sf::Texture m_cursImg;
         sf::Vector2i m_cursPos;
 
         sf::Clock m_clock;
