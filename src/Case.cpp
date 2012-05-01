@@ -18,7 +18,7 @@ Case::~Case()
 void Case::setPositionOnTileset(int x, int y)
 {
     // Zone du tileset à afficher
-    SetSubRect(sf::IntRect(x*Case::WIDTH,
+    setTextureRect(sf::IntRect(x*Case::WIDTH,
                            y*Case::HEIGHT,
                            (x+1)*Case::WIDTH,
                            (y+1)*Case::HEIGHT));

@@ -40,13 +40,13 @@ Map::Map(int w, int h) :
             maCase = new Case(*this, i, j);
 
             // tileset et zone à prendre (src_dst)
-            maCase->SetImage(m_tileset);
+            maCase->setTexture(m_tileset);
             maCase->setPositionOnTileset(0, 0);
 
             // isométrie!
             sf::Vector2f v(i, j);
             toIso(v);
-            maCase->SetPosition(v.x, v.y);
+            maCase->setPosition(v.x, v.y);
 
             // affiche coordonnées avant/après iso.
             //std::cout << i   << ", " << j   << " => "
@@ -57,8 +57,8 @@ Map::Map(int w, int h) :
     ////
 
     // curseur
-    m_cursImg.LoadFromFile("gfx/curs.png");
-    m_curs.SetImage(m_cursImg);
+    m_cursImg.loadFromFile("gfx/curs.png");
+    m_curs.setTexture(m_cursImg);
 
 }
 
@@ -84,13 +84,11 @@ Map::~Map()
 
 void Map::loadTileset(std::string path)
 {
-    if (!m_tileset.LoadFromFile(path))
+    if (!m_tileset.loadFromFile(path))
     {
         //TODO: Utiliser une exception?
         std::cerr << "Le chargement du tileset a échoué" << std::endl;
     }
-
-    m_tileset.SetSmooth(false);
 }
 
 
@@ -101,12 +99,12 @@ void Map::affiche(sf::RenderWindow& app)
     {
         for (int j = 0; j<m_h; j++)
         {
-            app.Draw(*m_map[i][j]);
+            app.draw(*m_map[i][j]);
         }
     }
 
     // affiche le curseur
-    app.Draw(m_curs);
+    app.draw(m_curs);
 
     // affiche les entités
     for (std::vector<Entity*>::iterator it = m_entities.begin();
@@ -139,7 +137,7 @@ void Map::registerCharacter(Character& c)
 void Map::mouseDown(sf::Event evt)
 {
     // clic droit: déplacer le personnage jusqu'au curseur
-    if (evt.MouseButton.Button == sf::Mouse::Left)
+    if (evt.mouseButton.button == sf::Mouse::Left)
     {
         if (!m_character)
             std::cerr << "merde..." << std::endl;
@@ -149,7 +147,7 @@ void Map::mouseDown(sf::Event evt)
 
 void Map::mouseMove(sf::Event evt)
 {
-    setCursorPos(sf::Vector2f(evt.MouseMove.X, evt.MouseMove.Y));
+    setCursorPos(sf::Vector2f(evt.mouseMove.x, evt.mouseMove.y));
 }
 
 void Map::setCursorPos(sf::Vector2f v)
@@ -164,12 +162,12 @@ void Map::setCursorPos(sf::Vector2f v)
     // reconvertit en iso
     sf::Vector2f v2(m_cursPos.x, m_cursPos.y);
     toIso(v2);
-    m_curs.SetPosition(v2);
+    m_curs.setPosition(v2);
 }
 
 sf::Vector2f Map::getCursorPos()
 {
-    return m_curs.GetPosition();
+    return m_curs.getPosition();
 }
 
 std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
@@ -330,7 +328,7 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
 
 float Map::getElapsedTime()
 {
-    return m_clock.GetElapsedTime();
+    return m_clock.getElapsedTime().asSeconds();
 }
 
 void Map::loadTest()

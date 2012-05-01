@@ -3,16 +3,15 @@
 Character::Character(Map& map) : Entity(map)
 {
     // charge image
-    if (!m_image.LoadFromFile("gfx/charset.png"))
+    if (!m_image.loadFromFile("gfx/charset.png"))
     {
         //TODO: Utiliser une exception?
         std::cerr << "Le chargement du tileset a échoué" << std::endl;
     }
-    m_image.SetSmooth(false);
-    m_sprite.SetImage(m_image);
+    m_sprite.setTexture(m_image);
     m_map.registerCharacter(*this);
 
-    m_sprite.SetPosition(spritePos(m_pos));
+    m_sprite.setPosition(spritePos(m_pos));
     m_dir = 4;
     m_moving = false;
     m_speed = 1.8;
@@ -27,11 +26,10 @@ void Character::affiche(sf::RenderWindow& app)
 {
     int imgNb = m_moving? (int)(m_map.getElapsedTime() * m_speed*5) % 4 : 0;
 
-    m_sprite.SetSubRect(sf::IntRect( imgNb*32,      m_dir*48,
-                                     imgNb*32 + 32, m_dir*48 + 48 ));
+    m_sprite.setTextureRect(sf::IntRect( imgNb*32, m_dir*48, 32, 48));
 
     //m_sprite.SetPosition(pos);
-    app.Draw(m_sprite);
+    app.draw(m_sprite);
 
     //TODO: mettre ça autrepart
     move();
@@ -82,7 +80,7 @@ void Character::move()
         sf::Vector2i nextPos = *(m_movementQueue.end() - 1);
         sf::Vector2f curIsoPos, nextIsoPos, v;
 
-        curIsoPos = m_sprite.GetPosition();
+        curIsoPos = m_sprite.getPosition();
 
         nextIsoPos = spritePos(nextPos);
 
@@ -99,12 +97,12 @@ void Character::move()
         v.x = std::cos(a) * m_speed;                // retour en cartésien
         v.y = std::sin(a) * m_speed;
 
-        m_sprite.SetPosition(curIsoPos.x + v.x, curIsoPos.y + v.y);
+        m_sprite.setPosition(curIsoPos.x + v.x, curIsoPos.y + v.y);
 
         if (d < m_speed)
         {
             m_pos = nextPos;
-            m_sprite.SetPosition(nextIsoPos);
+            m_sprite.setPosition(nextIsoPos);
             m_movementQueue.pop_back();
         }
     }
