@@ -7,9 +7,9 @@
         { "name":"dirt", "xpos":1, "ypos":0, "cost":10 }
     ],
 
-    objects :
+    "objects" :
     [
-        { "name":"skel",  "xpos":0, "ypos":0, "cost":14 },
-        { "name":"rocks", "xpos":1, "ypos":0, "cost":10 }
-    ],
+        { "name":"skel",  "xpos":0, "ypos":0, "cost":0 },
+        { "name":"rocks", "xpos":1, "ypos":0, "cost":2 }
+    ]
 }
