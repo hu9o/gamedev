@@ -15,7 +15,7 @@ JSON::JSON(std::string path)
     buf << t.rdbuf();
     std::string json = buf.str();
 
-	printf("Original JSON:\n %s\n", json.c_str());
+	printf("Original JSON:\n%s\n", json.c_str());
 
 
 #if 0

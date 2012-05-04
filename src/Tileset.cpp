@@ -13,7 +13,7 @@ Tileset::Tileset(std::string path) :
 
 	printf("tileset path = %s\n", tilesetPath.c_str());
 
-	img.LoadFromFile(tilesetPath);
+	img.loadFromFile(tilesetPath);
 }
 
 Tileset::~Tileset()

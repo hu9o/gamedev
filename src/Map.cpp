@@ -9,20 +9,6 @@ Map::Map(int w, int h) :
     m_map(NULL),
     m_character(NULL)
 {
-
-//    // map de test, en attendant de la charger
-//    struct
-//    {
-//        int x, y;
-//    }
-//    testmap[6][6] = {{{0, 0}, {0, 0}, {0, 0}, {0, 0}, {1, 0}, {0, 0}},
-//                    {{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
-//                    {{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}},
-//                    {{0, 0}, {0, 0}, {0, 4}, {0, 5}, {0, 6}, {0, 0}},
-//                    {{0, 0}, {1, 0}, {1, 4}, {1, 5}, {1, 6}, {0, 0}},
-//                    {{0, 0}, {0, 0}, {2, 4}, {2, 5}, {2, 6}, {0, 0}}};
-
-
     // charge le tileset
     loadTileset("gfx/tileset.png");
 
@@ -62,6 +48,95 @@ Map::Map(int w, int h) :
 
 }
 
+Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
+{
+    m_w = 0;
+    m_h = 0;
+
+    JSON j("map/"+nom+".json");
+
+    assert(j.IsObject());
+	assert(j.HasMember("map"));
+	assert(j.HasMember("tiles"));
+	assert(j["tiles"].IsString());
+	assert(j.HasMember("cases"));
+
+	const js::Value& a = j["cases"];
+	assert(a.IsObject());
+
+	const js::Value& b = j["map"];
+	assert(b.IsArray());
+
+    //Assignation des dimensions m_w et m_h à partir du tableau de "map" (ici b)
+	for (js::SizeType i = 0; i < b.Size(); i++)
+    {
+        assert(b[i].IsString());
+        //m_w prend la valeur max des largeurs de b
+        m_w = ((m_w<(int)b[i].GetStringLength()) ? (int)b[i].GetStringLength() : m_w);
+        m_h ++;
+    }
+
+    // charge le tileset
+    loadTileset("gfx/tileset.png");
+
+    // remplit
+    m_map = new Case**[m_w];
+
+    for (int i = 0; i<m_w; i++)
+    {
+        m_map[i] = new Case*[m_h];
+
+        for (int j = 0; j<m_h; j++)
+        {
+            Case*& maCase = m_map[i][j];
+
+            maCase = new Case(*this, i, j);
+
+            // tileset et zone à prendre (src_dst)
+            maCase->setTexture(m_tileset);
+
+            ////////////
+
+            //On attribue chaque ligne de la map à une chaine de charactères
+            std::string mapLine = b[j].GetString();
+
+            //Puis la colonne i détermine le charactère lu
+            char index[] = {mapLine.at(i), '\0'};
+
+            //Qui sert ensuite de clef à la lecture de l'objet de "cases" (ici a) correspondant
+            const js::Value& caseLine = a[index];
+
+            //Objet qui détermine le type de terrain appliqué à la case
+            if (caseLine["terr"].GetString() == std::string("dirt"))
+            {
+                //Terre
+                maCase->setPositionOnTileset(1, 0);
+            }
+            else
+            {
+                //Sable
+                maCase->setPositionOnTileset(0, 0);
+            }
+
+            ///////////
+
+            // isométrie!
+            sf::Vector2f v(i, j);
+            toIso(v);
+            maCase->setPosition(v.x, v.y);
+
+            // affiche coordonnées avant/après iso.
+            //std::cout << i   << ", " << j   << " => "
+            //          << v.x << ", " << v.y << std::endl;
+        }
+    }
+
+    ////
+
+    // curseur
+    m_cursImg.loadFromFile("gfx/curs.png");
+    m_curs.setTexture(m_cursImg);
+}
 
 Map::~Map()
 {
@@ -143,6 +218,8 @@ void Map::mouseDown(sf::Event evt)
             std::cerr << "merde..." << std::endl;
         m_character->gotoPos(m_cursPos, false);
     }
+
+
 }
 
 void Map::mouseMove(sf::Event evt)
@@ -352,6 +429,30 @@ void Map::loadTest()
 
         printf(" - char: %c; terr: %s;\n", a[i]["char"].GetString()[0], a[i]["terr"].GetString());
     }
+
+    //const js::Value& b = j["map"];
+
+    //delete m_map;
+    //m_map = new Case**[b.Size()];
+
+    /*for (js::SizeType i = 0; i < b.Size(); i++)
+    {
+        m_map[i] = new Case*[b[i].Size()];
+        assert(b[i].IsString());
+        for(js::SizeType j = 0; j < b[i].Size(); j++)
+        {
+            Case*& maCase = m_map[i][j];
+
+            maCase = new Case(*this, i, j);
+
+            maCase->setTexture(m_tileset);
+            maCase->setPositionOnTileset(0, 0);
+
+            sf::Vector2f v(i, j);
+            toIso(v);
+            maCase->setPosition(v.x, v.y);
+        }
+    }*/
 
 }
 

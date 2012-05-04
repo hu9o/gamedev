@@ -20,8 +20,8 @@ void Case::setPositionOnTileset(int x, int y)
     // Zone du tileset à afficher
     setTextureRect(sf::IntRect(x*Case::WIDTH,
                            y*Case::HEIGHT,
-                           (x+1)*Case::WIDTH,
-                           (y+1)*Case::HEIGHT));
+                           Case::WIDTH,
+                           Case::HEIGHT));
 
     ////TODO: C'EST DU TEST!
     //if (x == 1) m_walkable = false;

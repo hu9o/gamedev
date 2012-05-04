@@ -13,8 +13,8 @@ int main()
     App.setFramerateLimit(25);
 
     // Load a sprite to display
-    Map carte(16, 16);
-    carte.loadTest();
+    Map carte("default-map");
+    //carte.loadTest();
     Character perso(carte);
 
     // Start the game loop

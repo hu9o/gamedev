@@ -2,12 +2,12 @@
     "tiles" : "default-tiles.json",
 
     "cases" :
-    [
-        { "char":".", "terr":"sand", "objs":[] },
-        { "char":"%", "terr":"sand", "objs":["skel"] },
-        { "char":"w", "terr":"sand", "objs":["water"] },
-        { "char":"v", "terr":"dirt", "objs":["rocks", "water"] }
-    ],
+    {
+        "." : { "char":".", "terr":"sand", "objs":[] },
+        "%" : { "char":"%", "terr":"sand", "objs":["skel"] },
+        "w" : { "char":"w", "terr":"sand", "objs":["water"] },
+        "v" : { "char":"v", "terr":"dirt", "objs":["rocks", "water"] }
+    },
 
     "map" :
     [
@@ -15,7 +15,7 @@
         ".....%",
         "......",
         "..www.",
-        "..www.",
-        "%....."
+        "..wwwv",
+        "%...vv"
     ]
 }

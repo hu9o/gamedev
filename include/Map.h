@@ -27,6 +27,7 @@ class Map
 
         // Cteur, dteur
         Map(int w, int h);
+        Map(std::string nom);
         virtual ~Map();
 
 
@@ -100,11 +101,11 @@ class Map
 
 
         /// largeur et hauteur de la map
-        const int m_w, m_h;
+        int m_w, m_h;
 
         Case*** m_map;
         sf::Texture m_tileset;
-        sf::Texture m_Objs;
+        //sf::Texture m_Objs;
 
         sf::Sprite m_curs;
         sf::Texture m_cursImg;
