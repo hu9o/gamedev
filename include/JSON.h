@@ -10,5 +10,6 @@ class JSON : public js::Document
         virtual ~JSON();
     protected:
     private:
+        char* buffer;
 };
 

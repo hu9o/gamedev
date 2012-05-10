@@ -2,6 +2,7 @@
 #include <cmath>
 #include "Character.h"
 #include "JSON.h"
+//#include <sstream>
 
 Map::Map(int w, int h) :
     m_w(w),
@@ -76,10 +77,19 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
         m_h ++;
     }
 
-    // charge le tileset
-    loadTileset("gfx/tileset.png");
+    JSON k(std::string("map/")+j["tiles"].GetString());
+    assert(k.IsObject());
+    assert(k.HasMember("tileset"));
+    assert(k.HasMember("terrains"));
+    assert(k.HasMember("objects"));
 
-    // remplit
+    //Charge le tileset à partir du fichier renseigné dans celui de map
+    loadTileset(std::string("gfx/")+k["tileset"].GetString());
+
+    const js::Value& c = k["terrains"];
+	assert(c.IsArray());
+
+    //Remplit
     m_map = new Case**[m_w];
 
     for (int i = 0; i<m_w; i++)
@@ -95,8 +105,6 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
             // tileset et zone à prendre (src_dst)
             maCase->setTexture(m_tileset);
 
-            ////////////
-
             //On attribue chaque ligne de la map à une chaine de charactères
             std::string mapLine = b[j].GetString();
 
@@ -107,15 +115,20 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
             const js::Value& caseLine = a[index];
 
             //Objet qui détermine le type de terrain appliqué à la case
-            if (caseLine["terr"].GetString() == std::string("dirt"))
+            //en le faisant correspondre à l'attribut "name" de "terrains"
+            //du fichier de tiles
+
+            //Ici test prend tour à tour les valeurs de l'attribut "name" pour le test
+            std::string test;
+            for (js::SizeType n = 0; n < c.Size(); n++)
             {
-                //Terre
-                maCase->setPositionOnTileset(1, 0);
-            }
-            else
-            {
-                //Sable
-                maCase->setPositionOnTileset(0, 0);
+                test = c[n]["name"].GetString();
+                if(caseLine["terr"].GetString() == test)
+                {
+                    //On lira le tileset selon xpos et ypos
+                    maCase->setPositionOnTileset(c[n]["xpos"].GetInt(),
+                                                 c[n]["ypos"].GetInt());
+                }
             }
 
             ///////////

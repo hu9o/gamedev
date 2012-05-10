@@ -12,9 +12,10 @@ int main()
     sf::RenderWindow App(sf::VideoMode(SCREEN_W, SCREEN_H), "Projet Gamedev");
     App.setFramerateLimit(25);
 
-    // Load a sprite to display
+    //Chargement de la map (à partir d'un fichier)
     Map carte("default-map");
-    //carte.loadTest();
+
+    //Création du perso
     Character perso(carte);
 
     // Start the game loop
