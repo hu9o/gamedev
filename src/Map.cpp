@@ -1,7 +1,9 @@
+#include <vector>
 #include "Map.h"
 #include <cmath>
 #include "Character.h"
 #include "JSON.h"
+#include "Element.h"
 //#include <sstream>
 
 Map::Map(int w, int h) :
@@ -10,10 +12,11 @@ Map::Map(int w, int h) :
     m_map(NULL),
     m_character(NULL)
 {
-    // charge le tileset
+    /// Charge le tileset
+
     loadTileset("gfx/tileset.png");
 
-    // remplit
+    /// Remplit
 
     m_map = new Case**[m_w];
 
@@ -26,24 +29,25 @@ Map::Map(int w, int h) :
 
             maCase = new Case(*this, i, j);
 
-            // tileset et zone à prendre (src_dst)
-            maCase->setTexture(m_tileset);
-            maCase->setPositionOnTileset(0, 0);
+            /// Tileset et zone à prendre (src_dst)
 
-            // isométrie!
+            maCase->setTex(&m_tileset);
+            maCase->setGround(0, 0);
+
+            /// Isométrie
+
             sf::Vector2f v(i, j);
             toIso(v);
-            maCase->setPosition(v.x, v.y);
+            maCase->setPos(v.x, v.y);
 
-            // affiche coordonnées avant/après iso.
+            /// Affiche coordonnées avant/après iso.
             //std::cout << i   << ", " << j   << " => "
             //          << v.x << ", " << v.y << std::endl;
         }
     }
 
-    ////
+    /// Curseur
 
-    // curseur
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 
@@ -54,42 +58,50 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
     m_w = 0;
     m_h = 0;
 
-    JSON j("map/"+nom+".json");
+    JSON objetMap("map/"+nom+".json");
 
-    assert(j.IsObject());
-	assert(j.HasMember("map"));
-	assert(j.HasMember("tiles"));
-	assert(j["tiles"].IsString());
-	assert(j.HasMember("cases"));
+    assert(objetMap.IsObject());
+	assert(objetMap.HasMember("map"));
+	assert(objetMap.HasMember("tiles"));
+	assert(objetMap["tiles"].IsString());
+	assert(objetMap.HasMember("cases"));
 
-	const js::Value& a = j["cases"];
-	assert(a.IsObject());
+	const js::Value& cases = objetMap["cases"];
+	assert(cases.IsObject());
 
-	const js::Value& b = j["map"];
-	assert(b.IsArray());
+	const js::Value& carte = objetMap["map"];
+	assert(carte.IsArray());
 
-    //Assignation des dimensions m_w et m_h à partir du tableau de "map" (ici b)
-	for (js::SizeType i = 0; i < b.Size(); i++)
+    /// Assignation des dimensions m_w et m_h à partir du tableau de "map"
+
+	for (js::SizeType i = 0; i < carte.Size(); i++)
     {
-        assert(b[i].IsString());
-        //m_w prend la valeur max des largeurs de b
-        m_w = ((m_w<(int)b[i].GetStringLength()) ? (int)b[i].GetStringLength() : m_w);
+        assert(carte[i].IsString());
+
+        /// m_w prend la valeur max des largeurs de carte
+
+        m_w = ((m_w<(int)carte[i].GetStringLength()) ? (int)carte[i].GetStringLength() : m_w);
         m_h ++;
     }
 
-    JSON k(std::string("map/")+j["tiles"].GetString());
-    assert(k.IsObject());
-    assert(k.HasMember("tileset"));
-    assert(k.HasMember("terrains"));
-    assert(k.HasMember("objects"));
+    JSON objetTiles(std::string("map/")+objetMap["tiles"].GetString());
+    assert(objetTiles.IsObject());
+    assert(objetTiles.HasMember("tileset"));
+    assert(objetTiles.HasMember("terrains"));
+    assert(objetTiles.HasMember("objects"));
 
-    //Charge le tileset à partir du fichier renseigné dans celui de map
-    loadTileset(std::string("gfx/")+k["tileset"].GetString());
+    /// Charge le tileset à partir du fichier renseigné dans celui de map
 
-    const js::Value& c = k["terrains"];
-	assert(c.IsArray());
+    loadTileset(std::string("gfx/")+objetTiles["tileset"].GetString());
 
-    //Remplit
+    const js::Value& sol = objetTiles["terrains"];
+	assert(sol.IsArray());
+
+	const js::Value& objets = objetTiles["objects"];
+	assert(objets.IsArray());
+
+    /// Remplit
+
     m_map = new Case**[m_w];
 
     for (int i = 0; i<m_w; i++)
@@ -102,58 +114,75 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
 
             maCase = new Case(*this, i, j);
 
-            // tileset et zone à prendre (src_dst)
-            maCase->setTexture(m_tileset);
+            /// Tileset
 
-            //On attribue chaque ligne de la map à une chaine de charactères
-            std::string mapLine = b[j].GetString();
+            maCase->setTex(&m_tileset);
 
-            //Puis la colonne i détermine le charactère lu
+            /// On attribue chaque ligne de la map à une chaine de charactères
+
+            std::string mapLine = carte[j].GetString();
+
+            /// Puis la colonne i détermine le charactère lu
+
             char index[] = {mapLine.at(i), '\0'};
 
-            //Qui sert ensuite de clef à la lecture de l'objet de "cases" (ici a) correspondant
-            const js::Value& caseLine = a[index];
+            /// Qui sert ensuite de clef à la lecture de l'objet de "cases" correspondant
 
-            //Objet qui détermine le type de terrain appliqué à la case
-            //en le faisant correspondre à l'attribut "name" de "terrains"
-            //du fichier de tiles
+            const js::Value& caseLine = cases[index];
 
-            //Ici test prend tour à tour les valeurs de l'attribut "name" pour le test
+            /**
+              * Objet qui détermine le type de terrain appliqué à la case
+              * en le faisant correspondre à l'attribut "name" de "terrains"
+              * du fichier de tiles
+              */
+
+            /// Ici test prend tour à tour les valeurs de l'attribut "name" pour le test
+
             std::string test;
-            for (js::SizeType n = 0; n < c.Size(); n++)
+            for (js::SizeType n = 0; n < sol.Size(); n++)
             {
-                test = c[n]["name"].GetString();
+                test = sol[n]["name"].GetString();
                 if(caseLine["terr"].GetString() == test)
                 {
-                    //On lira le tileset selon xpos et ypos
-                    maCase->setPositionOnTileset(c[n]["xpos"].GetInt(),
-                                                 c[n]["ypos"].GetInt());
+                    /// On lira le tileset selon xpos et ypos
+
+                    maCase->setGround(sol[n]["xpos"].GetInt(),
+                                      sol[n]["ypos"].GetInt());
                 }
             }
 
-            ///////////
+            for (js::SizeType m = 0; m < objets.Size(); m++)
+            {
+                test = objets[m]["name"].GetString();
+                if(caseLine["objs"].GetString() == test)
+                {
+                    maCase->setObject(objets[m]["xpos"].GetInt(),
+                                      objets[m]["ypos"].GetInt());
 
-            // isométrie!
+                    if(objets[m]["cost"].GetInt()>0)
+                    {
+                        maCase->setWalkable(false);
+                    }
+                }
+            }
+
+            /// Isométrie
+
             sf::Vector2f v(i, j);
             toIso(v);
-            maCase->setPosition(v.x, v.y);
-
-            // affiche coordonnées avant/après iso.
-            //std::cout << i   << ", " << j   << " => "
-            //          << v.x << ", " << v.y << std::endl;
+            maCase->setPos(v.x, v.y);
         }
     }
 
-    ////
+    /// Curseur
 
-    // curseur
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 }
 
 Map::~Map()
 {
-    // vide la map
+    /// Vide la map
 
     for (int i = 0; i<m_w; i++)
     {
@@ -166,45 +195,51 @@ Map::~Map()
     }
 
     delete m_map;
-
-    ////
 }
 
 void Map::loadTileset(std::string path)
 {
     if (!m_tileset.loadFromFile(path))
     {
-        //TODO: Utiliser une exception?
+        ///TODO: Utiliser une exception?
+
         std::cerr << "Le chargement du tileset a échoué" << std::endl;
     }
 }
 
-
 void Map::affiche(sf::RenderWindow& app)
 {
-    // affiche les cases
+    /// Affiche les cases
+
     for (int i = 0; i<m_w; i++)
     {
         for (int j = 0; j<m_h; j++)
         {
-            app.draw(*m_map[i][j]);
+            app.draw(m_map[i][j]->getTerrain());
+
+            if(m_map[i][j]->hasObject())
+            {
+                app.draw(m_map[i][j]->getObjet());
+            }
         }
     }
 
-    // affiche le curseur
+    /// Affiche le curseur
+
     app.draw(m_curs);
 
-    // affiche les entités
+    /// Affiche les entités
+
     for (std::vector<Entity*>::iterator it = m_entities.begin();
                                         it < m_entities.end();
                                       ++it)
     {
-        //// isométrie
+        /// Isométrie
         //sf::Vector2i pos1 = (*it)->getPosition();
         //sf::Vector2f pos = sf::Vector2f(pos1.x, pos1.y);
         //toIso(pos);
 
-        // affichage
+        /// Affichage
         (*it)->affiche(app);
     }
 
@@ -212,27 +247,28 @@ void Map::affiche(sf::RenderWindow& app)
 
 void Map::registerEntity(Entity& e)
 {
-    // ajoute à la liste d'entités
+    /// Ajoute à la liste d'entités
+
     m_entities.push_back(&e);
 }
 
 void Map::registerCharacter(Character& c)
 {
-    // ajoute à la liste d'entités
+    /// Ajoute à la liste d'entités
+
     m_character = &c;
 }
 
 void Map::mouseDown(sf::Event evt)
 {
-    // clic droit: déplacer le personnage jusqu'au curseur
+    /// Clic gauche: déplacer le personnage jusqu'au curseur
+
     if (evt.mouseButton.button == sf::Mouse::Left)
     {
         if (!m_character)
             std::cerr << "merde..." << std::endl;
         m_character->gotoPos(m_cursPos, false);
     }
-
-
 }
 
 void Map::mouseMove(sf::Event evt)
@@ -242,14 +278,16 @@ void Map::mouseMove(sf::Event evt)
 
 void Map::setCursorPos(sf::Vector2f v)
 {
-    // coords normales
+    /// Coords normales
+
     fromIso(v);
-    v.x--; // ajustement (??)
+    v.x--; /// ajustement (??)
 
     m_cursPos.x = round(v.x);
     m_cursPos.y = round(v.y);
 
-    // reconvertit en iso
+    /// Reconvertit en iso
+
     sf::Vector2f v2(m_cursPos.x, m_cursPos.y);
     toIso(v2);
     m_curs.setPosition(v2);
@@ -263,14 +301,16 @@ sf::Vector2f Map::getCursorPos()
 std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
                                         sf::Vector2i targetPos)
 {
-    // on s'arrête si la liste fermée est vide (pas de chemin)
-    //   ou si l'arrivée est dans la liste fermée
-    //TODO: Surveiller la mémoire!!
-
-    ////std::cout << "pathfinding start" <<std::endl;
-
-    // amélioration: utiliser une liste triée pour avoir le plus petit F en 1er?
-    //   ou garder trace du plus petit F pour ne pas avoir à boucler
+    /**
+      * On s'arrête si la liste fermée est vide (pas de chemin)
+      * ou si l'arrivée est dans la liste fermée
+      * TODO: Surveiller la mémoire!!
+      *
+      * std::cout << "pathfinding start" <<std::endl;
+      *
+      * Amélioration: utiliser une liste triée pour avoir le plus petit F en 1er?
+      * ou garder trace du plus petit F pour ne pas avoir à boucler
+      */
 
     Node target(NULL, targetPos.x, targetPos.y);
     Node source(NULL, sourcePos.x, sourcePos.y);
@@ -278,9 +318,11 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
     source.target = &target;
     target.target = &target;
 
-        ////std::cout << "target: ("
-        ////          << target.x << ", " << target.y
-        ////          << ')' << std::endl;
+    /*
+     * std::cout << "target: ("
+     * << target.x << ", " << target.y
+     * << ')' << std::endl;
+     */
 
     std::vector<Node*> open, closed;
     //Node* openLowest = NULL;
@@ -296,8 +338,8 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
         std::vector<Node*>::iterator currentIt;
         Node* current = NULL;
 
+        /// On prend l'élément qui a le plus petit F
 
-        // on prend l'élément qui a le plus petit F
         it = open.begin();
         currentIt = it;
         current = *currentIt;
@@ -314,19 +356,24 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
         }
 
 
-        // déplace 'current' dans la liste fermée
+        /// déplace 'current' dans la liste fermée
+
         open.erase(currentIt);
         closed.push_back(current);
 
-        // recherche des voisins
+        /// Recherche des voisins
+
         std::vector<Node*> neighbors;
         for (int i=-1; i<=1; i++)
         {
             for (int j=-1; j<=1; j++)
             {
-                // ajoute le noeud aux voisins si ce n'est pas le noeud courant
-                // et si le noeud est traversable
-                // et s'il n'est pas dans la lsite fermée
+                /**
+                  * Ajoute le noeud aux voisins si ce n'est pas le noeud courant
+                  * et si le noeud est traversable
+                  * et s'il n'est pas dans la liste fermée
+                  */
+
                 bool notInClosed = true;
                 for (it = closed.begin(); it!=closed.end() && notInClosed; ++it)
                 {
@@ -351,7 +398,7 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
             }
         }
 
-        // boucle sur les voisins...
+        /// Boucle sur les voisins...
 
         for (it = neighbors.begin(); it != neighbors.end(); ++it)
         {
@@ -369,8 +416,9 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
                 }
             }
 
-            // si le voisin est dans la liste ouverte, plus court chemin?
-            // sinon, on l'ajoute simplement
+            /// Si le voisin est dans la liste ouverte, plus court chemin?
+            /// sinon, on l'ajoute simplement
+
             if (found)
             {
                 if (neigh->g > (*open_n)->g)
@@ -391,12 +439,13 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
         if (current->x == target.x && current->y == target.y)
         {
             target = *current;
-            ////std::cout << "LOOL\n";
+            //std::cout << "LOOL\n";
             break;
         }
     }
 
-    //on remonte par parents depuis target
+    /// On remonte par parents depuis target
+
     std::vector<sf::Vector2i> res;
     Node* node = &target;
     bool foundPath;
@@ -404,15 +453,17 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
     {
         res.push_back(sf::Vector2i(node->x, node->y));
 
-        // si le noeud parent est nul, on a soit target soit source.
-        // si c'est source, le chemin a été trouvé
+        /// Si le noeud parent est nul, on a soit target soit source.
+        /// si c'est source, le chemin a été trouvé
+
         if (node->parent == NULL)
             foundPath = (node == &source);
 
         node = node->parent;
     }
 
-    // si un chemin a été trouvé, le renvoie. Sinon renvoie une liste vide.
+    /// Si un chemin a été trouvé, le renvoie. Sinon renvoie une liste vide.
+
     return foundPath? res : std::vector<sf::Vector2i>();
 }
 
@@ -433,7 +484,7 @@ void Map::loadTest()
 	assert(j["tiles"].IsString());
 	printf("tiles path = %s\n", j["tiles"].GetString());
     assert(j.HasMember("cases"));
-    const js::Value& a = j["cases"];	// Using a reference for consecutive access is handy and faster.
+    const js::Value& a = j["cases"];
     assert(a.IsArray());
 
     for (js::SizeType i = 0; i < a.Size(); i++)
@@ -443,30 +494,29 @@ void Map::loadTest()
         printf(" - char: %c; terr: %s;\n", a[i]["char"].GetString()[0], a[i]["terr"].GetString());
     }
 
-    //const js::Value& b = j["map"];
-
-    //delete m_map;
-    //m_map = new Case**[b.Size()];
-
-    /*for (js::SizeType i = 0; i < b.Size(); i++)
-    {
-        m_map[i] = new Case*[b[i].Size()];
-        assert(b[i].IsString());
-        for(js::SizeType j = 0; j < b[i].Size(); j++)
-        {
-            Case*& maCase = m_map[i][j];
-
-            maCase = new Case(*this, i, j);
-
-            maCase->setTexture(m_tileset);
-            maCase->setPositionOnTileset(0, 0);
-
-            sf::Vector2f v(i, j);
-            toIso(v);
-            maCase->setPosition(v.x, v.y);
-        }
-    }*/
-
+    /*
+     * const js::Value& b = j["map"];
+     *
+     * delete m_map;
+     * m_map = new Case**[b.Size()];
+     *
+     * for (js::SizeType i = 0; i < b.Size(); i++)
+     * {
+     *      m_map[i] = new Case*[b[i].Size()];
+     *      assert(b[i].IsString());
+     *      for(js::SizeType j = 0; j < b[i].Size(); j++)
+     *      {
+     *          Case*& maCase = m_map[i][j];
+     *          maCase = new Case(*this, i, j);
+     *          maCase->setTexture(m_tileset);
+     *          maCase->setPositionOnTileset(0, 0);
+     *
+     *          sf::Vector2f v(i, j);
+     *          toIso(v);
+     *          maCase->setPosition(v.x, v.y);
+     *      }
+     *  }
+     */
 }
 
 bool Map::isWalkable(int x, int y)
@@ -477,33 +527,35 @@ bool Map::isWalkable(int x, int y)
 void Map::toIso(sf::Vector2f& v)
 {
     float a = std::atan2(v.y, v.x);
-    float d = std::sqrt(v.x*v.x + v.y*v.y);        // en polaire
+    float d = std::sqrt(v.x*v.x + v.y*v.y);     /// en polaire
 
-    a += M_PI_4;                                // rajoute 45°
+    a += M_PI_4;                                /// rajoute 45°
 
-    v.x = std::cos(a) * d;                // retour en cartésien
+    v.x = std::cos(a) * d;                      /// retour en cartésien
     v.y = std::sin(a) * d;
 
     v.x *= M_SQRT2 * (Case::WIDTH/2);
     v.y *= M_SQRT2 * (Case::HEIGHT/2);
 
-    v.x += ( SCREEN_W - Case::WIDTH )/2;                        // ajustement
-    v.y += ( SCREEN_H - Case::HEIGHT * std::sqrt(m_w*m_h) )/2; // ajustement
+    /// Ajustement
+    v.x += ( SCREEN_W - Case::WIDTH )/2;
+    v.y += ( SCREEN_H - Case::HEIGHT * std::sqrt(m_w*m_h) )/2;
 }
 
 void Map::fromIso(sf::Vector2<float>& v)
 {
-    v.x -= ( SCREEN_W - Case::WIDTH )/2;                        // ajustement
-    v.y -= ( SCREEN_H - Case::HEIGHT * std::sqrt(m_w*m_h) )/2; // ajustement
+    /// Ajustement
+    v.x -= ( SCREEN_W - Case::WIDTH )/2;
+    v.y -= ( SCREEN_H - Case::HEIGHT * std::sqrt(m_w*m_h) )/2;
 
     v.x /= M_SQRT2 * (Case::WIDTH/2);
     v.y /= M_SQRT2 * (Case::HEIGHT/2);
 
     float a = std::atan2(v.y, v.x);
-    float d = std::sqrt(v.x*v.x + v.y*v.y);        // en polaire
+    float d = std::sqrt(v.x*v.x + v.y*v.y);     /// en polaire
 
-    a -= M_PI_4;                                // enlève 45°
+    a -= M_PI_4;                                /// enlève 45°
 
-    v.x = std::cos(a) * d;                // retour en cartésien
+    v.x = std::cos(a) * d;                      /// retour en cartésien
     v.y = std::sin(a) * d;
 }

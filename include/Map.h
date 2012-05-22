@@ -105,7 +105,6 @@ class Map
 
         Case*** m_map;
         sf::Texture m_tileset;
-        //sf::Texture m_Objs;
 
         sf::Sprite m_curs;
         sf::Texture m_cursImg;

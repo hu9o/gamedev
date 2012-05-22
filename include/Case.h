@@ -2,13 +2,11 @@
 
 #include <SFML/Graphics.hpp>
 
-
 class Map;
 
 /**
   * Classe Case
   * Représente une case, contenue dans une Map.
-  * Étend sf::Sprite, l'image correspondante est le tileset.
   *
   * @param map la carte dont elle fait partie
   * @param x sa position x sur la carte
@@ -17,7 +15,8 @@ class Map;
   * @see Map
   * @see sf::Sprite
   */
-class Case : public sf::Sprite
+
+class Case
 {
     public:
 
@@ -28,20 +27,33 @@ class Case : public sf::Sprite
         Case(Map& map, int x, int y);
         virtual ~Case();
 
-        /// Donne la position de la case sur le tileset (et non sur la map)
-        void setPositionOnTileset(int x, int y);
+        void setTex(sf::Texture *m_tile);
+        void setPos(float x, float y);
+
+        /// Situe le terrain et l'objet de la case sur le tileset (et non sur la map)
+        void setGround(int x, int y);
+        void setObject(int x, int y);
+
+        sf::Sprite getTerrain();
+        sf::Sprite getObjet();
+
+        bool hasObject();
         bool isWalkable();
+        void setWalkable(bool walk);
 
     protected:
         /// Carte parente
         Map& m_map;
 
-        //TODO: Est-ce utile?
         /// Position sur la carte
         int m_x, m_y;
 
         /// Case franchissable?
         bool m_walkable;
 
+        bool m_object;
+
     private:
+        sf::Sprite terrain;
+        sf::Sprite objet;
 };

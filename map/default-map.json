@@ -3,19 +3,19 @@
 
     "cases" :
     {
-        "." : { "char":".", "terr":"sand", "objs":[] },
-        "%" : { "char":"%", "terr":"sand", "objs":["skel"] },
-        "w" : { "char":"w", "terr":"sand", "objs":["water"] },
-        "v" : { "char":"v", "terr":"dirt", "objs":["rocks", "water"] }
+        "." : { "char":".", "terr":"sand", "objs":" " },
+        "%" : { "char":"%", "terr":"sand", "objs":"skel" },
+        "w" : { "char":"w", "terr":"sand", "objs":"water" },
+        "v" : { "char":"v", "terr":"sand", "objs":"rocks" }
     },
 
     "map" :
     [
-        "..%...",
+        "......",
         ".vv..%",
         ".v....",
-        ".vwww.",
-        "..wwwv",
+        ".v....",
+        ".....v",
         "%...vv"
     ]
 }

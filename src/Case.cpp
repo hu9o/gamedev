@@ -1,13 +1,12 @@
 #include "Case.h"
 
-#include <SFML/Graphics.hpp>
-
 Case::Case(Map& map, int x, int y) :
     m_map(map),
     m_x(x),
     m_y(y)
 {
     m_walkable = true;
+    m_object = false;
 }
 
 Case::~Case()
@@ -15,19 +14,58 @@ Case::~Case()
     //dtor
 }
 
-void Case::setPositionOnTileset(int x, int y)
+void Case::setTex(sf::Texture* m_tile)
+{
+    terrain.setTexture(*m_tile);
+    objet.setTexture(*m_tile);
+}
+
+void Case::setPos(float x, float y)
+{
+    terrain.setPosition(x,y);
+    objet.setPosition(x,y);
+}
+
+void Case::setGround(int x, int y)
 {
     // Zone du tileset à afficher
-    setTextureRect(sf::IntRect(x*Case::WIDTH,
-                           y*Case::HEIGHT,
-                           Case::WIDTH,
-                           Case::HEIGHT));
+    terrain.setTextureRect(sf::IntRect(x*Case::WIDTH,
+                                       y*Case::HEIGHT,
+                                       Case::WIDTH,
+                                       Case::HEIGHT));
+}
 
-    ////TODO: C'EST DU TEST!
-    //if (x == 1) m_walkable = false;
+void Case::setObject(int x, int y)
+{
+    // Zone du tileset à afficher
+    objet.setTextureRect(sf::IntRect(x*Case::WIDTH,
+                                     y*Case::HEIGHT,
+                                     Case::WIDTH,
+                                     Case::HEIGHT));
+    m_object = true;
+}
+
+sf::Sprite Case::getTerrain()
+{
+    return terrain;
+}
+
+sf::Sprite Case::getObjet()
+{
+    return objet;
+}
+
+bool Case::hasObject()
+{
+    return m_object;
 }
 
 bool Case::isWalkable()
 {
     return m_walkable;
+}
+
+void Case::setWalkable(bool walk)
+{
+    m_walkable = walk;
 }
