@@ -84,22 +84,30 @@ void Character::move()
 
         nextIsoPos = spritePos(nextPos);
 
+
+        sf::Vector2f curPos = curIsoPos;
+        m_map.fromIso(curPos);
+        Case* curCase = m_map.getCaseAt(ceil(curPos.x), ceil(curPos.y));
+
+        float speed = m_speed * 10 / curCase->getCost();
+
+
         v.x = nextIsoPos.x - curIsoPos.x;
         v.y = nextIsoPos.y - curIsoPos.y;
 
         float a = std::atan2(v.y, v.x);
         float d = std::sqrt(v.x*v.x + v.y*v.y);        // en polaire
 
-        if (d > m_speed*2) m_dir = (int)round((a + M_PI*2) / M_PI_4) % 8;
+        if (d > speed*2) m_dir = (int)round((a + M_PI*2) / M_PI_4) % 8;
 
-        //TODO: utiliser 'a' pour donne rla bonne valeur à m_dir (direction)
+        //TODO: utiliser 'a' pour donner la bonne valeur à m_dir (direction)
 
-        v.x = std::cos(a) * m_speed;                // retour en cartésien
-        v.y = std::sin(a) * m_speed;
+        v.x = std::cos(a) * speed;                // retour en cartésien
+        v.y = std::sin(a) * speed;
 
         m_sprite.setPosition(curIsoPos.x + v.x, curIsoPos.y + v.y);
 
-        if (d < m_speed)
+        if (d < speed)
         {
             m_pos = nextPos;
             m_sprite.setPosition(nextIsoPos);

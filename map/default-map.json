@@ -3,19 +3,24 @@
 
     "cases" :
     {
-        "." : { "char":".", "terr":"sand", "objs":" " },
-        "%" : { "char":"%", "terr":"sand", "objs":"skel" },
-        "w" : { "char":"w", "terr":"sand", "objs":"water" },
-        "v" : { "char":"v", "terr":"sand", "objs":"rocks" }
+        "." : { "terr":"sand", "objs":" " },
+        "," : { "terr":"grass", "objs":" " },
+        ";" : { "terr":"dirt", "objs":" " },
+        "%" : { "terr":"sand", "objs":"skel" },
+        "w" : { "terr":"sand", "objs":"water" },
+        "o" : { "terr":"sand", "objs":"rocks" },
+        "c" : { "terr":"grass", "objs":"rocks" },
+        "I" : { "terr":"sand", "objs":"cactus" },
+        "T" : { "terr":"grass", "objs":"pine" }
     },
 
     "map" :
     [
-        "......",
-        ".vv..%",
-        ".v....",
-        ".v....",
-        ".....v",
-        "%...vv"
+        ",,,,;.",
+        ",T,,;%",
+        ",c.;;;",
+        ".o..;;",
+        "..I.;;",
+        "%.o.I;"
     ]
 }

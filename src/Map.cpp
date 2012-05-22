@@ -3,7 +3,6 @@
 #include <cmath>
 #include "Character.h"
 #include "JSON.h"
-#include "Element.h"
 //#include <sstream>
 
 Map::Map(int w, int h) :
@@ -115,19 +114,19 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
             maCase = new Case(*this, i, j);
 
             /// Tileset
-
             maCase->setTex(&m_tileset);
 
             /// On attribue chaque ligne de la map à une chaine de charactères
-
             std::string mapLine = carte[j].GetString();
 
             /// Puis la colonne i détermine le charactère lu
 
+            // on "transforme" le caractère en chaîne (le caractère en question
+            // suivi du caractère nul)
             char index[] = {mapLine.at(i), '\0'};
 
-            /// Qui sert ensuite de clef à la lecture de l'objet de "cases" correspondant
-
+            /// Qui sert ensuite de clef à la lecture de l'objet de "cases"
+            /// correspondant
             const js::Value& caseLine = cases[index];
 
             /**
@@ -136,7 +135,10 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
               * du fichier de tiles
               */
 
-            /// Ici test prend tour à tour les valeurs de l'attribut "name" pour le test
+            int coutSol, coutObj;
+
+            /// Ici test prend tour à tour les valeurs de l'attribut "name" pour
+            /// le test
 
             std::string test;
             for (js::SizeType n = 0; n < sol.Size(); n++)
@@ -148,23 +150,45 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
 
                     maCase->setGround(sol[n]["xpos"].GetInt(),
                                       sol[n]["ypos"].GetInt());
+
+                    coutSol = sol[n]["cost"].GetInt();
                 }
             }
 
             for (js::SizeType m = 0; m < objets.Size(); m++)
             {
                 test = objets[m]["name"].GetString();
-                if(caseLine["objs"].GetString() == test)
-                {
-                    maCase->setObject(objets[m]["xpos"].GetInt(),
-                                      objets[m]["ypos"].GetInt());
 
-                    if(objets[m]["cost"].GetInt()>0)
+                if (caseLine["objs"].GetString() == test)
+                {
+
+                    if (objets[m].HasMember("width") && objets[m].HasMember("height"))
                     {
-                        maCase->setWalkable(false);
+                        maCase->setObject(objets[m]["xpos"].GetInt(),
+                                          objets[m]["ypos"].GetInt(),
+                                          objets[m]["width"].GetInt(),
+                                          objets[m]["height"].GetInt());
                     }
+                    else
+                    {
+                        maCase->setObject(objets[m]["xpos"].GetInt(),
+                                          objets[m]["ypos"].GetInt());
+                    }
+
+                    // ajuste la position de l'image par apport à celle de la case
+                    if (objets[m].HasMember("centerx") && objets[m].HasMember("centery"))
+                    {
+                        maCase->setRelativeObjectImagePos(-objets[m]["centerx"].GetInt(),
+                                                          -objets[m]["centery"].GetInt());
+                    }
+
+                    coutObj = objets[m]["cost"].GetInt();
+
                 }
             }
+
+
+            maCase->setCost(coutSol + coutObj);
 
             /// Isométrie
 
@@ -312,8 +336,8 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
       * ou garder trace du plus petit F pour ne pas avoir à boucler
       */
 
-    Node target(NULL, targetPos.x, targetPos.y);
-    Node source(NULL, sourcePos.x, sourcePos.y);
+    Node target(NULL, targetPos.x, targetPos.y, getCaseAt(targetPos));
+    Node source(NULL, sourcePos.x, sourcePos.y, getCaseAt(targetPos));
 
     source.target = &target;
     target.target = &target;
@@ -375,6 +399,8 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
                   */
 
                 bool notInClosed = true;
+                Case* currentCase = getCaseAt(current->x+i, current->y+j);
+
                 for (it = closed.begin(); it!=closed.end() && notInClosed; ++it)
                 {
                     if ((*it)->x == current->x+i &&
@@ -382,6 +408,7 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
                     notInClosed = false;
                 }
 
+                std::cout << "loooolll" << std::endl;
                 if ((i || j) && notInClosed
                     && isWalkable(current->x+i, current->y+j)
                     && ( (!i || !j) || (isWalkable(current->x, current->y+j)
@@ -389,8 +416,9 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
                        )
                    )
                 {
-                    Node* c = new Node(current, current->x+i, current->y+j);
-                    c->g = current->g + ((i && j)? 14:10);
+                    Node* c = new Node(current, current->x+i, current->y+j, currentCase);
+                    std::cout << ">> " << currentCase->getCost() << std::endl;
+                    c->g = current->g + ((i && j)? 14:10)*currentCase->getCost();
                     //c->h = abs(c->x - target.x) + abs(c->y - target.y);
 
                     neighbors.push_back(c);
@@ -444,6 +472,7 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
         }
     }
 
+    std::cout << "loll" << std::endl;
     /// On remonte par parents depuis target
 
     std::vector<sf::Vector2i> res;
@@ -462,9 +491,29 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
         node = node->parent;
     }
 
+
     /// Si un chemin a été trouvé, le renvoie. Sinon renvoie une liste vide.
 
     return foundPath? res : std::vector<sf::Vector2i>();
+}
+
+bool Map::withinBounds(int x, int y)
+{
+    return x >= 0 && y >= 0 && x < m_w && y < m_h;
+}
+
+Case* Map::getCaseAt(int x, int y)
+{
+    if (withinBounds(x, y))
+        return m_map[x][y];
+}
+
+Case* Map::getCaseAt(sf::Vector2i& v)
+{
+    if (withinBounds(v.x, v.y))
+        return m_map[v.x][v.y];
+    else
+        std::cerr << "case hors limites" << std::endl;
 }
 
 float Map::getElapsedTime()
@@ -521,7 +570,7 @@ void Map::loadTest()
 
 bool Map::isWalkable(int x, int y)
 {
-    return x >= 0 && y >= 0 && x < m_w && y < m_h && m_map[x][y]->isWalkable();
+    return withinBounds(x, y) && getCaseAt(x, y)->isWalkable();
 }
 
 void Map::toIso(sf::Vector2f& v)

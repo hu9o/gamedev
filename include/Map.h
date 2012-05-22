@@ -18,7 +18,7 @@ class Character;
   *
   * @param w largeur de la carte
   * @param h hauteur de la carte
-  * @authr hu9o
+  * @author hu9o
   * @see Case
   */
 class Map
@@ -54,7 +54,7 @@ class Map
           * (modifie l'entrée, ne renvoie rien)
           *
           * @param v vecteur contenant les coordonnées (x, y)
-          * @authr hu9o
+          * @author hu9o
           * @see fromIso()
           */
         void toIso(sf::Vector2f& v);
@@ -63,7 +63,7 @@ class Map
           * Inverse de la fonction Map::toIso()
           *
           * @param v vecteur contenant les coordonnées (x, y)
-          * @authr hu9o
+          * @author hu9o
           * @see toIso()
           */
         void fromIso(sf::Vector2<float>& v);
@@ -72,22 +72,28 @@ class Map
 
         void loadTest();
 
+        bool withinBounds(int x, int y);
+        Case* getCaseAt(int x, int y);
+        Case* getCaseAt(sf::Vector2i& v);
+
     protected:
 
     private:
 
-        class Node
+        /// Structure uniquement utilisée par la fonction 'findPath'
+        struct Node
         {
-            public:
-            Node(Node* _p, int _x, int _y)
-             : parent(_p), x(_x), y(_y)
+            Node(Node* _p, int _x, int _y, Case* _c)
+             : parent(_p), x(_x), y(_y), c(_c)
             {
                 if (parent != NULL)
                     target = parent->target;
                 else
                     target = NULL;
             }
+
             int getF() { return g+getH(); }
+
             int getH()
             {
                 return (target != NULL)? abs(x-target->x)+abs(y-target->y) : 0;
@@ -95,8 +101,10 @@ class Map
 
             Node* parent;
             Node* target;
+            Case* c;
             int x, y;
             int g;
+            int cost;
         };
 
 

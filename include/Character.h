@@ -13,7 +13,7 @@ enum Direction { DIR_UPLEFT, DIR_UPRIGHT, DIR_DOWNLEFT, DIR_DOWNRIGHT };
   * Classe Character
   * Hérite de Entity, représente le personnage contrôlé par le joueur.
   *
-  * @authr hu9o
+  * @author hu9o
   * @see Character
   * @see Map
   */

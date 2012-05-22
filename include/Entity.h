@@ -11,7 +11,7 @@ class Map;
   * Les Entity sont rattachées à une Map, et sont affichées lors de l'affichage
   * de cette Map.
   *
-  * @authr hu9o
+  * @author hu9o
   * @see Character
   * @see Map
   */

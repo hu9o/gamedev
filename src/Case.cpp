@@ -5,8 +5,10 @@ Case::Case(Map& map, int x, int y) :
     m_x(x),
     m_y(y)
 {
-    m_walkable = true;
-    m_object = false;
+    m_isObject = false;
+    m_cost = 10;
+    relativeObjectImagePos.x = 0;
+    relativeObjectImagePos.y = 0;
 }
 
 Case::~Case()
@@ -16,56 +18,77 @@ Case::~Case()
 
 void Case::setTex(sf::Texture* m_tile)
 {
-    terrain.setTexture(*m_tile);
-    objet.setTexture(*m_tile);
+    m_terrain.setTexture(*m_tile);
+    m_objet.setTexture(*m_tile);
 }
 
 void Case::setPos(float x, float y)
 {
-    terrain.setPosition(x,y);
-    objet.setPosition(x,y);
+    m_pos.x = x;
+    m_pos.y = y;
+
+    m_terrain.setPosition(x, y);
+    m_objet.setPosition(x + relativeObjectImagePos.x,
+                        y + relativeObjectImagePos.y);
+}
+
+sf::Vector2i Case::getPos()
+{
+    return m_pos;
+}
+
+void Case::setRelativeObjectImagePos(int x, int y)
+{
+    relativeObjectImagePos.x = x * Case::WIDTH;
+    relativeObjectImagePos.y = y * Case::HEIGHT;
 }
 
 void Case::setGround(int x, int y)
 {
     // Zone du tileset à afficher
-    terrain.setTextureRect(sf::IntRect(x*Case::WIDTH,
-                                       y*Case::HEIGHT,
-                                       Case::WIDTH,
-                                       Case::HEIGHT));
+    m_terrain.setTextureRect(sf::IntRect(x*Case::WIDTH,
+                                         y*Case::HEIGHT,
+                                         Case::WIDTH,
+                                         Case::HEIGHT));
 }
 
-void Case::setObject(int x, int y)
+void Case::setObject(int x, int y, int w, int h)
 {
     // Zone du tileset à afficher
-    objet.setTextureRect(sf::IntRect(x*Case::WIDTH,
-                                     y*Case::HEIGHT,
-                                     Case::WIDTH,
-                                     Case::HEIGHT));
-    m_object = true;
+    m_objet.setTextureRect(sf::IntRect(x*Case::WIDTH,
+                                       y*Case::HEIGHT,
+                                       w*Case::WIDTH,
+                                       h*Case::HEIGHT));
+
+    m_isObject = true;
 }
 
 sf::Sprite Case::getTerrain()
 {
-    return terrain;
+    return m_terrain;
 }
 
 sf::Sprite Case::getObjet()
 {
-    return objet;
+    return m_objet;
 }
 
 bool Case::hasObject()
 {
-    return m_object;
+    return m_isObject;
 }
 
 bool Case::isWalkable()
 {
-    return m_walkable;
+    return m_cost < 100;
 }
 
-void Case::setWalkable(bool walk)
+int Case::getCost()
 {
-    m_walkable = walk;
+    return m_cost;
+}
+
+void Case::setCost(int cost)
+{
+    m_cost = cost;
 }
