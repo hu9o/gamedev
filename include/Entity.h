@@ -2,8 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 #include "Map.h"
+#include "Case.h"
 
 class Map;
+class Case;
 
 /**
   * Classe Entity
@@ -23,14 +25,16 @@ class Entity
 
         virtual void affiche(sf::RenderWindow& app) = 0;
 
-        sf::Vector2i getPosition();
+        virtual sf::Vector2i getPosition();
         void setPosition(sf::Vector2i& pos);
         void setPosition(int x, int y);
+        void setCase(Case& c);
 
     protected:
-        /// carte sur laquelle est le perso
+        /// carte sur laquelle est l'entité
         Map& m_map;
         sf::Vector2i m_pos;
+        Case* m_currentCase;
     private:
 };
 

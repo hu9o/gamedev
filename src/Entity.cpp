@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(Map& map) : m_map(map)
+Entity::Entity(Map& map) : m_map(map), m_currentCase(NULL)
 {
     // perso sur la carte
     m_map.registerEntity(*this);
@@ -27,4 +27,9 @@ void Entity::setPosition(int x, int y)
 {
     m_pos.x = x;
     m_pos.y = y;
+}
+
+void Entity::setCase(Case& c)
+{
+    m_currentCase = &c;
 }

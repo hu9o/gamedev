@@ -3,6 +3,7 @@
 #include <cmath>
 #include "Character.h"
 #include "JSON.h"
+#include "StaticEntity.h"
 //#include <sstream>
 
 Map::Map(int w, int h) :
@@ -135,7 +136,7 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
               * du fichier de tiles
               */
 
-            int coutSol, coutObj;
+            int coutSol = 0, coutObj = 0;
 
             /// Ici test prend tour à tour les valeurs de l'attribut "name" pour
             /// le test
@@ -161,28 +162,45 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
 
                 if (caseLine["objs"].GetString() == test)
                 {
-
-                    if (objets[m].HasMember("width") && objets[m].HasMember("height"))
+                    if (objets[m].HasMember("entity") && objets[m]["entity"].GetBool())
                     {
-                        maCase->setObject(objets[m]["xpos"].GetInt(),
-                                          objets[m]["ypos"].GetInt(),
-                                          objets[m]["width"].GetInt(),
-                                          objets[m]["height"].GetInt());
+                        StaticEntity* obj = new StaticEntity(*this);
+
+                        obj->setTileset(m_tileset);
+                        obj->setCase(*maCase);
+                        obj->setPositionOnTileset(objets[m]["xpos"].GetInt(),
+                                                  objets[m]["ypos"].GetInt(),
+                                                  objets[m]["width"].GetInt(),
+                                                  objets[m]["height"].GetInt(),
+                                                  objets[m]["centerx"].GetInt(),
+                                                  objets[m]["centery"].GetInt());
+
+                        coutObj = objets[m]["cost"].GetInt();
                     }
                     else
                     {
-                        maCase->setObject(objets[m]["xpos"].GetInt(),
-                                          objets[m]["ypos"].GetInt());
-                    }
+                        if (objets[m].HasMember("width") && objets[m].HasMember("height"))
+                        {
+                            maCase->setObject(objets[m]["xpos"].GetInt(),
+                                              objets[m]["ypos"].GetInt(),
+                                              objets[m]["width"].GetInt(),
+                                              objets[m]["height"].GetInt());
+                        }
+                        else
+                        {
+                            maCase->setObject(objets[m]["xpos"].GetInt(),
+                                              objets[m]["ypos"].GetInt());
+                        }
 
-                    // ajuste la position de l'image par apport à celle de la case
-                    if (objets[m].HasMember("centerx") && objets[m].HasMember("centery"))
-                    {
-                        maCase->setRelativeObjectImagePos(-objets[m]["centerx"].GetInt(),
-                                                          -objets[m]["centery"].GetInt());
-                    }
+                        // ajuste la position de l'image par apport à celle de la case
+                        if (objets[m].HasMember("centerx") && objets[m].HasMember("centery"))
+                        {
+                            maCase->setRelativeObjectImagePos(-objets[m]["centerx"].GetInt(),
+                                                              -objets[m]["centery"].GetInt());
+                        }
 
-                    coutObj = objets[m]["cost"].GetInt();
+                        coutObj = objets[m]["cost"].GetInt();
+                    }
 
                 }
             }
@@ -239,11 +257,11 @@ void Map::affiche(sf::RenderWindow& app)
     {
         for (int j = 0; j<m_h; j++)
         {
-            app.draw(m_map[i][j]->getTerrain());
+            app.draw(getCaseAt(i, j)->getTerrain());
 
-            if(m_map[i][j]->hasObject())
+            if(getCaseAt(i, j)->hasObject())
             {
-                app.draw(m_map[i][j]->getObjet());
+                app.draw(getCaseAt(i, j)->getObjet());
             }
         }
     }
