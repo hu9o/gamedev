@@ -272,8 +272,10 @@ void Map::affiche(sf::RenderWindow& app)
 
     /// Affiche les entités
 
-    for (std::vector<Entity*>::iterator it = m_entities.begin();
-                                        it < m_entities.end();
+    reorderEntities();
+
+    for (std::list<Entity*>::iterator   it = m_entities.begin();
+                                        it != m_entities.end();
                                       ++it)
     {
         /// Isométrie
@@ -292,6 +294,7 @@ void Map::registerEntity(Entity& e)
     /// Ajoute à la liste d'entités
 
     m_entities.push_back(&e);
+    m_entities.sort();
 }
 
 void Map::registerCharacter(Character& c)
@@ -348,7 +351,7 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
       * ou si l'arrivée est dans la liste fermée
       * TODO: Surveiller la mémoire!!
       *
-      * std::cout << "pathfinding start" <<std::endl;
+      * std::cout << "pathfinding start" << std::endl;
       *
       * Amélioration: utiliser une liste triée pour avoir le plus petit F en 1er?
       * ou garder trace du plus petit F pour ne pas avoir à boucler
@@ -625,4 +628,14 @@ void Map::fromIso(sf::Vector2<float>& v)
 
     v.x = std::cos(a) * d;                      /// retour en cartésien
     v.y = std::sin(a) * d;
+}
+
+bool compareEntities(Entity* first, Entity* second)
+{
+    return (*first) < (*second);
+}
+
+void Map::reorderEntities()
+{
+    m_entities.sort(compareEntities);
 }

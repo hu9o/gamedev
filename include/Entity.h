@@ -30,6 +30,10 @@ class Entity
         void setPosition(int x, int y);
         void setCase(Case& c);
 
+        virtual sf::Vector2i getDisplayPos() = 0;
+
+        bool operator<(Entity& e);
+
     protected:
         /// carte sur laquelle est l'entité
         Map& m_map;

@@ -16,6 +16,8 @@ class StaticEntity : public Entity
         void setTileset(sf::Texture& tileset);
         void setPositionOnTileset(int x, int y,int w, int h, int centerX, int centerY);
 
+        sf::Vector2i getDisplayPos();
+
     protected:
         sf::Sprite m_sprite;
         sf::Texture m_tileset;

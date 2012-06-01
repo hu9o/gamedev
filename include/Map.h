@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <iostream>
+#include <list>
 #include <vector>
 #include "Entity.h"
 #include "Case.h"
@@ -76,6 +77,8 @@ class Map
         Case* getCaseAt(int x, int y);
         Case* getCaseAt(sf::Vector2i& v);
 
+        void reorderEntities();
+
     protected:
 
     private:
@@ -120,7 +123,7 @@ class Map
 
         sf::Clock m_clock;
 
-        std::vector<Entity*> m_entities;
+        std::list<Entity*> m_entities;
         Character* m_character;
 
 
@@ -131,5 +134,6 @@ class Map
 
         void setCursorPos(sf::Vector2f v);
         sf::Vector2f getCursorPos();
+
 
 };

@@ -29,6 +29,8 @@ class Character : public Entity
 
         bool gotoPos(sf::Vector2i pos, bool add);
 
+        sf::Vector2i getDisplayPos();
+
     protected:
         sf::Texture m_image;
         sf::Sprite m_sprite;

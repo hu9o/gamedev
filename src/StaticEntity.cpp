@@ -48,3 +48,10 @@ void StaticEntity::setPositionOnTileset(int x, int y,int w, int h, int centerX, 
     m_spriteOffset.x = -centerX * Case::WIDTH;
     m_spriteOffset.y = -centerY * Case::HEIGHT;
 }
+
+sf::Vector2i StaticEntity::getDisplayPos()
+{
+    return getPosition();
+}
+
+

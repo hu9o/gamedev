@@ -124,3 +124,9 @@ sf::Vector2f Character::spritePos(sf::Vector2i v)
     v2.y -= 26;
     return v2;
 }
+
+sf::Vector2i Character::getDisplayPos()
+{
+    return sf::Vector2i(m_sprite.getPosition().x, m_sprite.getPosition().y);
+}
+
