@@ -104,8 +104,8 @@ class Map
 
             Node* parent;
             Node* target;
-            Case* c;
             int x, y;
+            Case* c;
             int g;
             int cost;
         };

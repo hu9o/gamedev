@@ -95,10 +95,10 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
     loadTileset(std::string("gfx/")+objetTiles["tileset"].GetString());
 
     const js::Value& sol = objetTiles["terrains"];
-	assert(sol.IsArray());
+	assert(sol.IsObject());
 
 	const js::Value& objets = objetTiles["objects"];
-	assert(objets.IsArray());
+	assert(objets.IsObject());
 
     /// Remplit
 
@@ -140,8 +140,7 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
 
             /// Ici test prend tour à tour les valeurs de l'attribut "name" pour
             /// le test
-
-            std::string test;
+            /*
             for (js::SizeType n = 0; n < sol.Size(); n++)
             {
                 test = sol[n]["name"].GetString();
@@ -154,54 +153,64 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
 
                     coutSol = sol[n]["cost"].GetInt();
                 }
-            }
+            }*/
+            const js::Value& caseTerr = objetTiles["terrains"][caseLine["terr"].GetString()];
+            assert(caseTerr.IsObject());
+            /// On lira le tileset selon xpos et ypos
 
-            for (js::SizeType m = 0; m < objets.Size(); m++)
+            maCase->setGround(caseTerr["xpos"].GetInt(),
+                              caseTerr["ypos"].GetInt());
+
+            coutSol = caseTerr["cost"].GetInt();
+
+
+
+            const js::Value& caseObjArray = caseLine["objs"];
+            coutObj = 0;
+
+            for (js::SizeType k = 0; k < caseObjArray.Size(); k++)
             {
-                test = objets[m]["name"].GetString();
+                js::Value& caseObj = objetTiles["objects"][caseObjArray[k].GetString()];
+                assert(caseObj.IsObject());
 
-                if (caseLine["objs"].GetString() == test)
+                if (caseObj.HasMember("entity") && caseObj["entity"].GetBool())
                 {
-                    if (objets[m].HasMember("entity") && objets[m]["entity"].GetBool())
+                    StaticEntity* obj = new StaticEntity(*this);
+
+                    obj->setTileset(m_tileset);
+                    obj->setCase(*maCase);
+                    obj->setPositionOnTileset(caseObj["xpos"].GetInt(),
+                                              caseObj["ypos"].GetInt(),
+                                              caseObj["width"].GetInt(),
+                                              caseObj["height"].GetInt(),
+                                              caseObj["centerx"].GetInt(),
+                                              caseObj["centery"].GetInt());
+
+                    coutObj += caseObj["cost"].GetInt();
+                }
+                else
+                {
+                    if (caseObj.HasMember("width") && caseObj.HasMember("height"))
                     {
-                        StaticEntity* obj = new StaticEntity(*this);
-
-                        obj->setTileset(m_tileset);
-                        obj->setCase(*maCase);
-                        obj->setPositionOnTileset(objets[m]["xpos"].GetInt(),
-                                                  objets[m]["ypos"].GetInt(),
-                                                  objets[m]["width"].GetInt(),
-                                                  objets[m]["height"].GetInt(),
-                                                  objets[m]["centerx"].GetInt(),
-                                                  objets[m]["centery"].GetInt());
-
-                        coutObj = objets[m]["cost"].GetInt();
+                        maCase->setObject(caseObj["xpos"].GetInt(),
+                                          caseObj["ypos"].GetInt(),
+                                          caseObj["width"].GetInt(),
+                                          caseObj["height"].GetInt());
                     }
                     else
                     {
-                        if (objets[m].HasMember("width") && objets[m].HasMember("height"))
-                        {
-                            maCase->setObject(objets[m]["xpos"].GetInt(),
-                                              objets[m]["ypos"].GetInt(),
-                                              objets[m]["width"].GetInt(),
-                                              objets[m]["height"].GetInt());
-                        }
-                        else
-                        {
-                            maCase->setObject(objets[m]["xpos"].GetInt(),
-                                              objets[m]["ypos"].GetInt());
-                        }
-
-                        // ajuste la position de l'image par apport à celle de la case
-                        if (objets[m].HasMember("centerx") && objets[m].HasMember("centery"))
-                        {
-                            maCase->setRelativeObjectImagePos(-objets[m]["centerx"].GetInt(),
-                                                              -objets[m]["centery"].GetInt());
-                        }
-
-                        coutObj = objets[m]["cost"].GetInt();
+                        maCase->setObject(caseObj["xpos"].GetInt(),
+                                          caseObj["ypos"].GetInt());
                     }
 
+                    // ajuste la position de l'image par apport à celle de la case
+                    if (caseObj.HasMember("centerx") && caseObj.HasMember("centery"))
+                    {
+                        maCase->setRelativeObjectImagePos(-caseObj["centerx"].GetInt(),
+                                                          -caseObj["centery"].GetInt());
+                    }
+
+                    coutObj += caseObj["cost"].GetInt();
                 }
             }
 
@@ -527,6 +536,8 @@ Case* Map::getCaseAt(int x, int y)
 {
     if (withinBounds(x, y))
         return m_map[x][y];
+
+    return NULL;
 }
 
 Case* Map::getCaseAt(sf::Vector2i& v)
@@ -535,6 +546,8 @@ Case* Map::getCaseAt(sf::Vector2i& v)
         return m_map[v.x][v.y];
     else
         std::cerr << "case hors limites" << std::endl;
+
+    return NULL;
 }
 
 float Map::getElapsedTime()

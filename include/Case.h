@@ -61,7 +61,7 @@ class Case
 
         sf::Vector2i relativeObjectImagePos;
 
-        /// Sprites du terrai et de l'objet (éventuel)
+        /// Sprites du terrain et de l'objet (éventuel)
         sf::Sprite m_terrain;
         sf::Sprite m_objet;
 };

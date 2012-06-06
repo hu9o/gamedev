@@ -3,24 +3,37 @@
 
     "cases" :
     {
-        "." : { "terr":"sand", "objs":" " },
-        "," : { "terr":"grass", "objs":" " },
-        ";" : { "terr":"dirt", "objs":" " },
-        "%" : { "terr":"sand", "objs":"skel" },
-        "o" : { "terr":"sand", "objs":"rocks" },
-        "c" : { "terr":"grass", "objs":"rocks" },
-        "I" : { "terr":"sand", "objs":"cactus" },
-        "T" : { "terr":"grass", "objs":"pine" },
-        "~" : { "terr":"sand", "objs":"water" }
+        "." : { "terr":"sand", "objs":[] },
+        "," : { "terr":"grass", "objs":[] },
+        ";" : { "terr":"dirt", "objs":[] },
+        "%" : { "terr":"sand", "objs":["skel"] },
+        "o" : { "terr":"sand", "objs":["rocks"] },
+        "c" : { "terr":"dirt", "objs":["rocks"] },
+        "n" : { "terr":"grass", "objs":["rocks"] },
+        "I" : { "terr":"sand", "objs":["cactus"] },
+        "T" : { "terr":"grass", "objs":["pine"] },
+        "~" : { "terr":"sand", "objs":["water"] },
+        "-" : { "terr":"sand", "objs":["water"] },
+        "=" : { "terr":"dirt", "objs":["water"] }
     },
 
     "map" :
     [
-        ",,,,.~",
-        ",T,,;.",
-        ",c.;;;",
-        ".o..;;",
-        "..I.;;",
-        "%.o.I;"
+        "..;c;;;;......I.",
+        "..;;,,;=--..I...",
+        ".I;,,,=====;;.o.",
+        "..;,,,n===,,,;..",
+        "..;;,,,,,,,,,;.I",
+        "..;;,T,T,,n,;;..",
+        "...;T,,,T,,;;I..",
+        ".I.;;,T,,,,;;...",
+        "...;;T,,,T,;;...",
+        "I%.;;;,T,,,;.I..",
+        "..;c;;;,,T,;....",
+        "..;;;.;;,,;;....",
+        ".I.....;;;;...I.",
+        "....I...;;;.....",
+        ".;c;...;;;..I.%.",
+        ";;;;;;;;;;c;;..."
     ]
 }
