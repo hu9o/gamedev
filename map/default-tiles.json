@@ -3,21 +3,21 @@
 
     "terrains" :
     {
-        "sand" : { "name":"sand", "xpos":3, "ypos":0, "cost":14 },
-        "dirt" : { "name":"dirt", "xpos":2, "ypos":0, "cost":10 },
-        "grass": { "name":"grass", "xpos":1, "ypos":0, "cost":10 }
+        "sand" : { "xpos":3, "ypos":0, "cost":14 },
+        "dirt" : { "xpos":2, "ypos":0, "cost":10 },
+        "grass": { "xpos":1, "ypos":0, "cost":10 }
     },
 
     "objects" :
     {
-        "skel" : { "name":"skel", "xpos":3, "ypos":1, "cost":0 },
-        "rocks": { "name":"rocks", "xpos":2, "ypos":2, "cost":100 },
+        "skel" : { "xpos":3, "ypos":1, "cost":0 },
+        "rock": { "xpos":2, "ypos":2, "cost":100 },
 
-        "water": { "name":"water", "xpos":6, "ypos":1, "cost":10, "auto":true },
+        "water": { "xpos":6, "ypos":1, "cost":10, "auto":true },
 
-        "cactus": { "name":"cactus", "xpos":3, "ypos":3, "cost":100, "entity":true,
+        "cactus": { "xpos":3, "ypos":3, "cost":100, "entity":true,
             "width":1, "height":2, "centerx":0, "centery":1 },
-        "pine" : { "name":"pine", "xpos":1, "ypos":3, "cost":100,  "entity":true,
+        "pine" : { "xpos":1, "ypos":3, "cost":100,  "entity":true,
             "width":1, "height":2, "centerx":0, "centery":1 }
     }
 }

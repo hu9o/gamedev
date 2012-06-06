@@ -438,7 +438,6 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
                     notInClosed = false;
                 }
 
-                std::cout << "loooolll" << std::endl;
                 if ((i || j) && notInClosed
                     && isWalkable(current->x+i, current->y+j)
                     && ( (!i || !j) || (isWalkable(current->x, current->y+j)
@@ -447,7 +446,7 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
                    )
                 {
                     Node* c = new Node(current, current->x+i, current->y+j, currentCase);
-                    std::cout << ">> " << currentCase->getCost() << std::endl;
+                    //std::cout << ">> " << currentCase->getCost() << std::endl;
                     c->g = current->g + ((i && j)? 14:10)*currentCase->getCost();
                     //c->h = abs(c->x - target.x) + abs(c->y - target.y);
 
@@ -497,12 +496,10 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
         if (current->x == target.x && current->y == target.y)
         {
             target = *current;
-            //std::cout << "LOOL\n";
             break;
         }
     }
 
-    std::cout << "loll" << std::endl;
     /// On remonte par parents depuis target
 
     std::vector<sf::Vector2i> res;
