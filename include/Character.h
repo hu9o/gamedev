@@ -28,6 +28,7 @@ class Character : public Entity
         void move();
 
         bool gotoPos(sf::Vector2i pos, bool add);
+        void plant(sf::Vector2i pos, bool add);
 
         sf::Vector2i getDisplayPos();
 

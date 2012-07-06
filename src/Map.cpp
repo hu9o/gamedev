@@ -323,6 +323,13 @@ void Map::mouseDown(sf::Event evt)
             std::cerr << "merde..." << std::endl;
         m_character->gotoPos(m_cursPos, false);
     }
+
+    if (evt.mouseButton.button == sf::Mouse::Right)
+    {
+        if (!m_character)
+            std::cerr << "remerde..." << std::endl;
+        m_character->plant(m_cursPos, false);
+    }
 }
 
 void Map::mouseMove(sf::Event evt)

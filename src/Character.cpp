@@ -130,3 +130,16 @@ sf::Vector2i Character::getDisplayPos()
     return sf::Vector2i(m_sprite.getPosition().x, m_sprite.getPosition().y);
 }
 
+void Character::plant(sf::Vector2i pos, bool add)
+{
+    sf::Vector2i startPos = m_movementQueue.empty()?
+                            m_pos : *(m_movementQueue.end()-1);
+
+    if((pos.x != startPos.x || pos.y != startPos.y) &&
+       ((pos.x-startPos.x)*(pos.x-startPos.x)+(pos.y-startPos.y)*(pos.y-startPos.y)==1))
+    {
+        m_map.getCaseAt(pos.x, pos.y)->setObject(1,0,1,1);
+        //m_map.getCaseAt(pos.x, pos.y)
+    }
+}
+
