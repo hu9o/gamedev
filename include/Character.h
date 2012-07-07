@@ -27,9 +27,14 @@ class Character : public Entity
         void affiche(sf::RenderWindow& app);
         void move();
 
+<<<<<<< HEAD
         bool gotoPos(sf::Vector2i pos, bool add, bool skipLast = false);
         bool goInFrontOfPos(sf::Vector2i pos, bool add);
         void setPosition(sf::Vector2i pos);
+=======
+        bool gotoPos(sf::Vector2i pos, bool add);
+        void plant(sf::Vector2i pos, bool add);
+>>>>>>> 42461bb6d6e0f3630aa219cda2055d18d097ea86
 
         sf::Vector2i getDisplayPos();
         void activate(sf::Vector2i pos);
