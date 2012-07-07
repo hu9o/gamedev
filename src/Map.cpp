@@ -348,7 +348,6 @@ void Map::mouseDown(sf::Event evt)
 
     if (evt.mouseButton.button == sf::Mouse::Right)
     {
-<<<<<<< HEAD
         m_character->goInFrontOfPos(m_cursPos, false);
     }
 }
@@ -372,12 +371,6 @@ void Map::say(NPC& npc, std::string msg)
     //std::cout << npc.getName() << ": " << msg << std::endl;
 
     m_messageBox.show(npc.getName() + ": " + msg);
-=======
-        if (!m_character)
-            std::cerr << "remerde..." << std::endl;
-        m_character->plant(m_cursPos, false);
-    }
->>>>>>> 42461bb6d6e0f3630aa219cda2055d18d097ea86
 }
 
 void Map::mouseMove(sf::Event evt)
