@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Map.h"
 
 Entity::Entity(Map& map) : m_map(map), m_currentCase(NULL)
 {
@@ -39,4 +40,9 @@ void Entity::setCase(Case& c)
 bool Entity::operator<(Entity& e)
 {
     return getDisplayPos().y < e.getDisplayPos().y;
+}
+
+bool Entity::activate()
+{
+    return false;
 }

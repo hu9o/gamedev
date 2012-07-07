@@ -45,13 +45,16 @@ class Case
 
         void setRelativeObjectImagePos(int x, int y);
 
+        bool activate();
+
     protected:
         /// Carte parente
         Map& m_map;
         sf::Vector2i m_pos;
+        sf::Vector2i m_intpos;
 
         /// Position sur la carte
-        int m_x, m_y;
+        //int m_x, m_y;
 
         /// Coût de déplacement
         int m_cost;

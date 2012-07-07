@@ -1,4 +1,5 @@
 #include "Character.h"
+#include "Map.h"
 
 Character::Character(Map& map) : Entity(map)
 {
@@ -12,9 +13,12 @@ Character::Character(Map& map) : Entity(map)
     m_map.registerCharacter(*this);
 
     m_sprite.setPosition(spritePos(m_pos));
-    m_dir = 4;
+    m_dir = 2;
     m_moving = false;
     m_speed = 1.8;
+    m_skin = 0;
+
+    m_caseToActivate = NULL;
 }
 
 Character::~Character()
@@ -24,9 +28,13 @@ Character::~Character()
 
 void Character::affiche(sf::RenderWindow& app)
 {
-    int imgNb = m_moving? (int)(m_map.getElapsedTime() * m_speed*5) % 4 : 0;
+    int imgNb = m_moving? (int)(m_map.getElapsedTime() * m_speed*5) % 2 : 0;
 
-    m_sprite.setTextureRect(sf::IntRect( imgNb*32, m_dir*48, 32, 48));
+
+    m_sprite.setTextureRect(sf::IntRect(imgNb*32 + (m_skin%16)*64,
+                                        m_dir*32 + (m_skin/16)*128,
+                                        32,
+                                        32));
 
     //m_sprite.SetPosition(pos);
     app.draw(m_sprite);
@@ -35,7 +43,14 @@ void Character::affiche(sf::RenderWindow& app)
     move();
 }
 
-bool Character::gotoPos(sf::Vector2i pos, bool add)
+void Character::setPosition(sf::Vector2i pos)
+{
+    m_pos = pos;
+
+    m_sprite.setPosition(spritePos(m_pos));
+}
+
+bool Character::gotoPos(sf::Vector2i pos, bool add, bool skipLast)
 {
 
     // la position de départ est la position actuelle,
@@ -45,6 +60,7 @@ bool Character::gotoPos(sf::Vector2i pos, bool add)
                                             m_pos : *(m_movementQueue.end()-1);
 
     std::vector<sf::Vector2i> movementList = m_map.findPath(startPos, pos);
+
 
     if (movementList.empty())
         return false;
@@ -60,15 +76,22 @@ bool Character::gotoPos(sf::Vector2i pos, bool add)
     else
         m_movementQueue.clear();
 
+    m_caseToActivate = skipLast? m_map.getCaseAt(movementList[0]) : NULL;
+
     // on ignore la première position, qui est la position actuelle
     //movementList.pop_back();
-    while (movementList.size() > 0)
+    while (movementList.size() > (skipLast? 1 : 0))
     {
         m_movementQueue.push_front(*(movementList.end() - 1));
         movementList.pop_back();
     }
 
     return !m_movementQueue.empty();
+}
+
+bool Character::goInFrontOfPos(sf::Vector2i pos, bool add)
+{
+    return gotoPos(pos, add, true);
 }
 
 void Character::move()
@@ -98,7 +121,8 @@ void Character::move()
         float a = std::atan2(v.y, v.x);
         float d = std::sqrt(v.x*v.x + v.y*v.y);        // en polaire
 
-        if (d > speed*2) m_dir = (int)round((a + M_PI*2) / M_PI_4) % 8;
+        //if (d > speed*2) m_dir = (int)round((a + M_PI*2) / M_PI_4) % 8;
+        if (d > speed*2) m_dir = (int)(round((a + M_PI*2) / M_PI_2) + 1) % 4;
 
         //TODO: utiliser 'a' pour donner la bonne valeur à m_dir (direction)
 
@@ -113,6 +137,16 @@ void Character::move()
             m_sprite.setPosition(nextIsoPos);
             m_movementQueue.pop_back();
         }
+
+        if (m_movementQueue.empty())
+        {
+            std::cout << "fin du mouvement!" << std::endl;
+
+            if (m_caseToActivate != NULL)
+            {
+                m_caseToActivate->activate();
+            }
+        }
     }
 }
 
@@ -121,7 +155,7 @@ sf::Vector2f Character::spritePos(sf::Vector2i v)
     sf::Vector2f v2(v.x, v.y);
     m_map.toIso(v2);
     v2.x += 8;
-    v2.y -= 26;
+    v2.y -= 14;
     return v2;
 }
 
@@ -130,3 +164,12 @@ sf::Vector2i Character::getDisplayPos()
     return sf::Vector2i(m_sprite.getPosition().x, m_sprite.getPosition().y);
 }
 
+void Character::activate(sf::Vector2i pos)
+{
+    Case* c = m_map.getCaseAt(pos);
+
+    if (c != NULL)
+    {
+        c->activate();
+    }
+}

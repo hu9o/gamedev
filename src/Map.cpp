@@ -1,7 +1,7 @@
 #include <vector>
 #include "Map.h"
 #include <cmath>
-#include "Character.h"
+#include "NPC.h"
 #include "JSON.h"
 #include "StaticEntity.h"
 //#include <sstream>
@@ -225,6 +225,26 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
         }
     }
 
+    ///Persos
+
+
+	const js::Value& NPCarr = objetMap["NPCs"];
+	assert(NPCarr.IsArray());
+
+	for (js::SizeType k = 0; k < NPCarr.Size(); k++)
+	{
+        const js::Value& npc = objetMap["NPCs"][k];
+
+        NPC* perso = new NPC(*this, sf::Vector2i(npc["xpos"].GetInt(), npc["ypos"].GetInt()), npc["name"].GetString(), npc["skin"].GetInt());
+
+        assert(npc["message"].IsArray());
+        for (js::SizeType m = 0; m < npc["message"].Size(); m++)
+        {
+            perso->addMessage(npc["message"][m].GetString());
+        }
+	}
+
+
     /// Curseur
 
     m_cursImg.loadFromFile("gfx/curs.png");
@@ -296,6 +316,8 @@ void Map::affiche(sf::RenderWindow& app)
         (*it)->affiche(app);
     }
 
+    m_messageBox.display(app);
+
 }
 
 void Map::registerEntity(Entity& e)
@@ -323,6 +345,32 @@ void Map::mouseDown(sf::Event evt)
             std::cerr << "merde..." << std::endl;
         m_character->gotoPos(m_cursPos, false);
     }
+
+    if (evt.mouseButton.button == sf::Mouse::Right)
+    {
+        m_character->goInFrontOfPos(m_cursPos, false);
+    }
+}
+
+Entity* Map::activateEntityAt(sf::Vector2i pos)
+{
+    for (std::list<Entity*>::iterator it = m_entities.begin(); it != m_entities.end(); it++)
+    {
+        if ((*it)->getPosition() == pos)
+        {
+            (*it)->activate();
+            return *it;
+        }
+    }
+
+    return NULL;
+}
+
+void Map::say(NPC& npc, std::string msg)
+{
+    //std::cout << npc.getName() << ": " << msg << std::endl;
+
+    m_messageBox.show(npc.getName() + ": " + msg);
 }
 
 void Map::mouseMove(sf::Event evt)

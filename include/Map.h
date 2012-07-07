@@ -6,6 +6,7 @@
 #include <vector>
 #include "Entity.h"
 #include "Case.h"
+#include "NPC.h"
 
 // taille de l'affichage (à revoir?)
 extern const int SCREEN_W, SCREEN_H;
@@ -79,6 +80,9 @@ class Map
 
         void reorderEntities();
 
+        Entity* activateEntityAt(sf::Vector2i pos);
+        void say(NPC& npc, std::string msg);
+
     protected:
 
     private:
@@ -110,6 +114,51 @@ class Map
             int cost;
         };
 
+        struct MessageBox
+        {
+            MessageBox()
+            {
+                 m_font.loadFromFile("fonts/minecraftia.ttf");
+                 m_text = NULL;
+                 m_counter = 0;
+            }
+
+            void show(std::string msg)
+            {
+                 // Create a text
+                 if (m_text != NULL)
+                    delete m_text;
+
+                m_counter = 48;
+
+                 m_text = new sf::Text(msg);
+                 m_text->setPosition(10, 10);
+                 m_text->setFont(m_font);
+                 m_text->setCharacterSize(16);
+
+                 std::cout << "AFFICHE!" << std::endl;
+            }
+
+            void display(sf::RenderWindow& app)
+            {
+                 // Draw it
+                 if (m_counter > 0)
+                 {
+                     if (m_counter < 44 && m_text != NULL)
+                     {
+                        app.draw(*m_text);
+                     }
+                    m_counter--;
+                }
+            }
+
+
+            sf::Font m_font;
+            sf::Text* m_text;
+            int m_counter;
+        };
+
+        MessageBox m_messageBox;
 
         /// largeur et hauteur de la map
         int m_w, m_h;

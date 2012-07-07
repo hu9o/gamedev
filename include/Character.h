@@ -1,8 +1,8 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include <deque>
-#include "Map.h"
 #include "Entity.h"
 
 class Map;
@@ -27,16 +27,22 @@ class Character : public Entity
         void affiche(sf::RenderWindow& app);
         void move();
 
-        bool gotoPos(sf::Vector2i pos, bool add);
+        bool gotoPos(sf::Vector2i pos, bool add, bool skipLast = false);
+        bool goInFrontOfPos(sf::Vector2i pos, bool add);
+        void setPosition(sf::Vector2i pos);
 
         sf::Vector2i getDisplayPos();
+        void activate(sf::Vector2i pos);
 
     protected:
         sf::Texture m_image;
         sf::Sprite m_sprite;
 
+        Case* m_caseToActivate;
+
         float m_speed;
         int m_dir; // remplacer par une enum?
+        int m_skin;
         bool m_moving;
 
         std::deque<sf::Vector2i> m_movementQueue;

@@ -1,7 +1,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Map.h"
-#include "Character.h"
+#include "NPC.h"
 
 extern const int SCREEN_W = 800; // TODO: Mettre ça dans une classe?
 extern const int SCREEN_H = 600;

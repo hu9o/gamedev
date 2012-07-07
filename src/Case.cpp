@@ -1,9 +1,10 @@
 #include "Case.h"
+#include "Map.h"
 
 Case::Case(Map& map, int x, int y) :
     m_map(map),
-    m_x(x),
-    m_y(y)
+    m_pos(x, y),
+    m_intpos(x, y)
 {
     m_isObject = false;
     m_cost = 10;
@@ -91,4 +92,16 @@ int Case::getCost()
 void Case::setCost(int cost)
 {
     m_cost = cost;
+}
+
+bool Case::activate()
+{
+    std::cout << "active!" << std::endl;
+
+    if (m_map.activateEntityAt(m_intpos) == NULL)
+    {
+        setObject(1,0,1,1);
+    }
+
+    return false;
 }

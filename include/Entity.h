@@ -1,7 +1,6 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Map.h"
 #include "Case.h"
 
 class Map;
@@ -33,6 +32,8 @@ class Entity
         virtual sf::Vector2i getDisplayPos() = 0;
 
         bool operator<(Entity& e);
+
+        virtual bool activate();
 
     protected:
         /// carte sur laquelle est l'entité

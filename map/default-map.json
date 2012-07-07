@@ -35,5 +35,12 @@
         "....I...;;;.....",
         ".;c;...;;;..I.%.",
         ";;;;;;;;;;c;;..."
-    ]
+    ],
+
+	"NPCs" :
+	[
+		{ "name":"MR LOBSTER", "xpos":2, "ypos":8, "skin":2, "message":["Salut!", "Belle journee, n'est-ce pas?", "J'ai pas grand chose de plus a dire..."] },
+		{ "name":"MRS LIVER", "xpos":10, "ypos":4, "skin":4, "message":["Bonjour!", "Je vends de la beuh medicinale, en voulez-vous?"] }
+
+	]
 }
