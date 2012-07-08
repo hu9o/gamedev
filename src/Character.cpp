@@ -59,7 +59,7 @@ bool Character::gotoPos(sf::Vector2i pos, bool add, bool skipLast)
     sf::Vector2i startPos = m_movementQueue.empty()?
                                             m_pos : *(m_movementQueue.end()-1);
 
-    std::vector<sf::Vector2i> movementList = m_map.findPath(startPos, pos);
+    std::vector<sf::Vector2i> movementList = m_map.findPath(startPos, pos, skipLast);
 
 
     if (movementList.empty())
@@ -80,7 +80,7 @@ bool Character::gotoPos(sf::Vector2i pos, bool add, bool skipLast)
 
     // on ignore la première position, qui est la position actuelle
     //movementList.pop_back();
-    while (movementList.size() > (skipLast? 1 : 0))
+    while (movementList.size() > skipLast? 1 : 0)
     {
         m_movementQueue.push_front(*(movementList.end() - 1));
         movementList.pop_back();
@@ -155,7 +155,7 @@ sf::Vector2f Character::spritePos(sf::Vector2i v)
     sf::Vector2f v2(v.x, v.y);
     m_map.toIso(v2);
     v2.x += 8;
-    v2.y -= 14;
+    v2.y -= 13;
     return v2;
 }
 

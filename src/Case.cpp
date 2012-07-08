@@ -100,7 +100,7 @@ bool Case::activate()
 
     if (m_map.activateEntityAt(m_intpos) == NULL)
     {
-        setObject(1,0,1,1);
+        setGround(1,0);
     }
 
     return false;

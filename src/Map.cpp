@@ -354,16 +354,12 @@ void Map::mouseDown(sf::Event evt)
 
 Entity* Map::activateEntityAt(sf::Vector2i pos)
 {
-    for (std::list<Entity*>::iterator it = m_entities.begin(); it != m_entities.end(); it++)
-    {
-        if ((*it)->getPosition() == pos)
-        {
-            (*it)->activate();
-            return *it;
-        }
-    }
+    Entity* e = getEntityAt(pos);
 
-    return NULL;
+    if (e)
+        e->activate();
+
+    return e;
 }
 
 void Map::say(NPC& npc, std::string msg)
@@ -401,7 +397,8 @@ sf::Vector2f Map::getCursorPos()
 }
 
 std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
-                                        sf::Vector2i targetPos)
+                                        sf::Vector2i targetPos,
+                                        bool skipLast)
 {
     /**
       * On s'arrête si la liste fermée est vide (pas de chemin)
@@ -471,10 +468,10 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
             for (int j=-1; j<=1; j++)
             {
                 /**
-                  * Ajoute le noeud aux voisins si ce n'est pas le noeud courant
-                  * et si le noeud est traversable
-                  * et s'il n'est pas dans la liste fermée
-                  */
+              * Ajoute le noeud aux voisins si ce n'est pas le noeud courant
+              * et si le noeud est traversable
+              * et s'il n'est pas dans la liste fermée
+              */
 
                 bool notInClosed = true;
                 Case* currentCase = getCaseAt(current->x+i, current->y+j);
@@ -486,12 +483,14 @@ std::vector<sf::Vector2i> Map::findPath(sf::Vector2i sourcePos,
                     notInClosed = false;
                 }
 
-                if ((i || j) && notInClosed
-                    && isWalkable(current->x+i, current->y+j)
-                    && ( (!i || !j) || (isWalkable(current->x, current->y+j)
-                                        && isWalkable(current->x+i, current->y))
+                if ( (current->x+i == target.x && current->y+j == target.y && skipLast) ||
+                       ((i || j) && notInClosed
+                        && isWalkable(current->x+i, current->y+j)
+                        && ( (!i || !j) || (isWalkable(current->x, current->y+j)
+                                            && isWalkable(current->x+i, current->y))
+                           )
                        )
-                   )
+                    )
                 {
                     Node* c = new Node(current, current->x+i, current->y+j, currentCase);
                     //std::cout << ">> " << currentCase->getCost() << std::endl;
@@ -649,7 +648,20 @@ void Map::loadTest()
 
 bool Map::isWalkable(int x, int y)
 {
-    return withinBounds(x, y) && getCaseAt(x, y)->isWalkable();
+    return withinBounds(x, y) && getCaseAt(x, y)->isWalkable() && !getEntityAt(sf::Vector2i(x, y));
+}
+
+Entity* Map::getEntityAt(sf::Vector2i pos)
+{
+    for (std::list<Entity*>::iterator it = m_entities.begin(); it != m_entities.end(); it++)
+    {
+        if ((*it)->getPosition() == pos)
+        {
+            return *it;
+        }
+    }
+
+    return NULL;
 }
 
 void Map::toIso(sf::Vector2f& v)

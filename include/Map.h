@@ -49,7 +49,8 @@ class Map
         bool isWalkable(int x, int y);
 
         std::vector<sf::Vector2i> findPath (sf::Vector2i sourcePos,
-                                            sf::Vector2i targetPos);
+                                            sf::Vector2i targetPos,
+                                            bool skipLast = false);
 
         /**
           * Convertit du repère cartésien au repère isométrique
@@ -80,6 +81,7 @@ class Map
 
         void reorderEntities();
 
+        Entity* getEntityAt(sf::Vector2i pos);
         Entity* activateEntityAt(sf::Vector2i pos);
         void say(NPC& npc, std::string msg);
 
@@ -146,6 +148,7 @@ class Map
                  {
                      if (m_counter < 44 && m_text != NULL)
                      {
+                         m_text->setPosition(10, 10 - (m_counter < 34? (m_counter < 5? 5-m_counter : 0 )*2 : m_counter-34)*3);
                         app.draw(*m_text);
                      }
                     m_counter--;
