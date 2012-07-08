@@ -46,3 +46,8 @@ bool Entity::activate(Character& chara)
 {
     return false;
 }
+
+void Entity::move()
+{
+
+}

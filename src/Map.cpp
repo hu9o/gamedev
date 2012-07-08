@@ -1,7 +1,7 @@
 #include <vector>
 #include "Map.h"
 #include <cmath>
-#include "NPC.h"
+#include "Enemy.h"
 #include "JSON.h"
 #include "StaticEntity.h"
 #include <sstream>
@@ -220,7 +220,8 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
             }
 
 
-            maCase->setCost(coutSol + coutObj);
+            maCase->setTerrainCost(coutSol);
+            maCase->setObjectCost(coutObj);
 
             /// Isométrie
 
@@ -238,17 +239,29 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
 
 	for (js::SizeType k = 0; k < NPCarr.Size(); k++)
 	{
-        const js::Value& npc = objetMap["NPCs"][k];
+        const js::Value& npc = NPCarr[k];
 
         NPC* perso = new NPC(*this, sf::Vector2i(npc["xpos"].GetInt(), npc["ypos"].GetInt()), npc["name"].GetString(), npc["skin"].GetInt());
 
-        assert(npc["message"].IsArray());
-        for (js::SizeType m = 0; m < npc["message"].Size(); m++)
+        if (npc.HasMember("message"))
         {
-            perso->addMessage(npc["message"][m].GetString());
+            assert(npc["message"].IsArray());
+            for (js::SizeType m = 0; m < npc["message"].Size(); m++)
+            {
+                perso->addMessage(npc["message"][m].GetString());
+            }
         }
 	}
+	const js::Value& enemyArr = objetMap["enemies"];
+	assert(enemyArr.IsArray());
 
+	for (js::SizeType k = 0; k < enemyArr.Size(); k++)
+	{
+        const js::Value& enemy = enemyArr[k];
+
+        new Enemy(*this, sf::Vector2i(enemy["xpos"].GetInt(), enemy["ypos"].GetInt()),
+                  enemy["name"].GetString(), enemy["skin"].GetInt(), enemy["type"].GetString());
+	}
 
     /// Curseur
 
@@ -319,6 +332,7 @@ void Map::affiche(sf::RenderWindow& app)
 
         /// Affichage
         (*it)->affiche(app);
+        (*it)->move();
     }
 
     m_messageBox.display(app);

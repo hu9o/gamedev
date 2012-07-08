@@ -24,6 +24,7 @@ class Entity
         virtual ~Entity();
 
         virtual void affiche(sf::RenderWindow& app) = 0;
+        virtual void move();
 
         virtual sf::Vector2i getPosition();
         void setPosition(sf::Vector2i& pos);

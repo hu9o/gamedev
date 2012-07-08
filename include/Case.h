@@ -42,11 +42,13 @@ class Case
         bool hasObject();
         bool isWalkable();
         int getCost();
-        void setCost(int cost);
+        void setObjectCost(int cost);
+        void setTerrainCost(int cost);
 
         void setRelativeObjectImagePos(int x, int y);
 
         bool activate();
+        bool isClean();
 
     protected:
         /// Carte parente
@@ -58,7 +60,8 @@ class Case
         //int m_x, m_y;
 
         /// Coût de déplacement
-        int m_cost;
+        int m_terrainCost;
+        int m_objectCost;
 
         /// Afficher l'objet?
         bool m_isObject;

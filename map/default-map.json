@@ -44,5 +44,11 @@
 		{ "name":"GANJA FARMER", "xpos":10, "ypos":4, "skin":4, "message":["Bonjour!", "Je vends de l'herbe medicinale, vous en voulez?"] },
 		{ "name":"NUTCRACKER", "xpos":9, "ypos":12, "skin":21, "message":["Je sais compter jusqu'a cent!", "un...", "deux...", "trois...", "quatre...", "cinq...", "six...", "sept...", "huit...", "neuf...", "dix...", "onze...", "douze...", "treize...", "quatorze...", "quinze...", "seize...", "dix-sept...", "dix-huit...", "dix-neuf...", "vingt...", "vingt et un...", "vingt-deux...", "vingt-trois...", "vingt-quatre...", "vingt-cinq...", "vingt-six...", "vingt-sept...", "vingt-huit...", "vingt-neuf...", "vingt-dix...", "vingt-douze...", "euh...", "cinquante-quinze?", "je ne suis pas sur de la suite..."] }
 
+	],
+
+	"enemies" :
+	[
+		{ "name":"Nonflying Lizard", "type":"scum", "skin":51, "xpos": 7, "ypos":11 },
+		{ "name":"Bandage Golem", "type":"scum", "skin":52, "xpos": 7, "ypos":11 }
 	]
 }

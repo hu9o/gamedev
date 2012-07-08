@@ -8,7 +8,8 @@ Case::Case(Map& map, int x, int y) :
 {
     m_isObject = false;
     m_isClean = true;
-    m_cost = 10;
+    m_objectCost = 10;
+    m_terrainCost = 10;
     relativeObjectImagePos.x = 0;
     relativeObjectImagePos.y = 0;
 }
@@ -87,17 +88,22 @@ bool Case::hasObject()
 
 bool Case::isWalkable()
 {
-    return m_cost < 100;
+    return getCost() < 100;
 }
 
 int Case::getCost()
 {
-    return m_cost;
+    return m_terrainCost + m_objectCost;
 }
 
-void Case::setCost(int cost)
+void Case::setObjectCost(int cost)
 {
-    m_cost = cost;
+    m_objectCost = cost;
+}
+
+void Case::setTerrainCost(int cost)
+{
+    m_terrainCost = cost;
 }
 
 bool Case::activate()
@@ -109,11 +115,17 @@ bool Case::activate()
     {
         if(!m_isClean)
         {
-            setObject(0,0);
+            m_isObject = false;
+            m_objectCost = 0;
             m_isClean = true;
             test = true;
         }
     }
 
     return test;
+}
+
+bool Case::isClean()
+{
+    return m_isClean;
 }
