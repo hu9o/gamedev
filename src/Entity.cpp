@@ -42,7 +42,7 @@ bool Entity::operator<(Entity& e)
     return getDisplayPos().y < e.getDisplayPos().y;
 }
 
-bool Entity::activate()
+bool Entity::activate(Character& chara)
 {
     return false;
 }

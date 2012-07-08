@@ -10,7 +10,7 @@ class NPC : public Character
 
         void addMessage(std::string msg);
 
-        virtual bool activate();
+        virtual bool activate(Character& chara);
 
         std::string getName();
 
