@@ -4,7 +4,7 @@
 #include "NPC.h"
 #include "JSON.h"
 #include "StaticEntity.h"
-//#include <sstream>
+#include <sstream>
 
 Map::Map(int w, int h) :
     m_w(w),
@@ -210,6 +210,11 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
                                                           -caseObj["centery"].GetInt());
                     }
 
+                    if (caseObj.HasMember("pollution") && caseObj["pollution"].GetBool())
+                    {
+                        maCase->setClean(false);
+                    }
+
                     coutObj += caseObj["cost"].GetInt();
                 }
             }
@@ -367,6 +372,17 @@ void Map::say(NPC& npc, std::string msg)
     //std::cout << npc.getName() << ": " << msg << std::endl;
 
     m_messageBox.show(npc.getName() + ": " + msg);
+}
+
+void Map::displayXP()
+{
+    int i = m_character->getExp();
+    std::string s;
+    std::stringstream out;
+    out << i;
+    s = out.str();
+
+    m_messageBox.show(s + " PX");
 }
 
 void Map::mouseMove(sf::Event evt)

@@ -14,6 +14,7 @@
         "rock": { "xpos":2, "ypos":2, "cost":100 },
 
         "water": { "xpos":6, "ypos":1, "cost":10, "auto":true },
+        "oil": { "xpos":6, "ypos":4, "cost":10, "pollution":true },
 
         "cactus": { "xpos":3, "ypos":3, "cost":100, "entity":true,
             "width":1, "height":2, "centerx":0, "centery":1 },

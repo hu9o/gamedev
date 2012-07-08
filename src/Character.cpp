@@ -17,6 +17,7 @@ Character::Character(Map& map) : Entity(map)
     m_moving = false;
     m_speed = 1.8;
     m_skin = 0;
+    m_exp = 0;
 
     m_caseToActivate = NULL;
 }
@@ -144,7 +145,11 @@ void Character::move()
 
             if (m_caseToActivate != NULL)
             {
-                m_caseToActivate->activate();
+                if(m_caseToActivate->activate())
+                {
+                    m_exp += 10;
+                    m_map.displayXP();
+                }
             }
         }
     }
@@ -162,6 +167,11 @@ sf::Vector2f Character::spritePos(sf::Vector2i v)
 sf::Vector2i Character::getDisplayPos()
 {
     return sf::Vector2i(m_sprite.getPosition().x, m_sprite.getPosition().y);
+}
+
+int Character::getExp()
+{
+    return m_exp;
 }
 
 void Character::activateAt(sf::Vector2i pos)

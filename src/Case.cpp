@@ -7,6 +7,7 @@ Case::Case(Map& map, int x, int y) :
     m_intpos(x, y)
 {
     m_isObject = false;
+    m_isClean = true;
     m_cost = 10;
     relativeObjectImagePos.x = 0;
     relativeObjectImagePos.y = 0;
@@ -31,6 +32,11 @@ void Case::setPos(float x, float y)
     m_terrain.setPosition(x, y);
     m_objet.setPosition(x + relativeObjectImagePos.x,
                         y + relativeObjectImagePos.y);
+}
+
+void Case::setClean(bool clean)
+{
+    m_isClean = clean;
 }
 
 sf::Vector2i Case::getPos()
@@ -96,12 +102,18 @@ void Case::setCost(int cost)
 
 bool Case::activate()
 {
+    bool test = false;
     std::cout << "active!" << std::endl;
 
     if (m_map.activateEntityAt(m_intpos) == NULL)
     {
-        setGround(1,0);
+        if(!m_isClean)
+        {
+            setObject(0,0);
+            m_isClean = true;
+            test = true;
+        }
     }
 
-    return false;
+    return test;
 }

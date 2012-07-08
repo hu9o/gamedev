@@ -34,6 +34,7 @@ class Case
         /// Situe le terrain et l'objet de la case sur le tileset (et non sur la map)
         void setGround(int x, int y);
         void setObject(int x, int y, int w = 1, int h = 1);
+        void setClean(bool clean);
 
         sf::Sprite getTerrain();
         sf::Sprite getObjet();
@@ -61,6 +62,9 @@ class Case
 
         /// Afficher l'objet?
         bool m_isObject;
+
+        ///Pollué ou pas
+        bool m_isClean;
 
         sf::Vector2i relativeObjectImagePos;
 

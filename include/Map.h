@@ -84,6 +84,7 @@ class Map
         Entity* getEntityAt(sf::Vector2i pos);
         Entity* activateEntityAt(sf::Vector2i pos);
         void say(NPC& npc, std::string msg);
+        void displayXP();
 
     protected:
 
