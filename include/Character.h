@@ -32,7 +32,8 @@ class Character : public Entity
         void setPosition(sf::Vector2i pos);
 
         sf::Vector2i getDisplayPos();
-        void activate(sf::Vector2i pos);
+        void activateAt(sf::Vector2i pos);
+        void lookAt(sf::Vector2i pos);
 
     protected:
         sf::Texture m_image;

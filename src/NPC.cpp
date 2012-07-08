@@ -18,8 +18,11 @@ void NPC::addMessage(std::string msg)
     m_messages.push_back(msg);
 }
 
-bool NPC::activate()
+bool NPC::activate(Character& chara)
 {
+    // se tourne rvers le perso
+    lookAt(chara.getPosition());
+
     if (m_messages.size() > m_messageNb)
     {
         m_map.say(*this, m_messages[m_messageNb]);

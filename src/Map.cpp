@@ -357,7 +357,7 @@ Entity* Map::activateEntityAt(sf::Vector2i pos)
     Entity* e = getEntityAt(pos);
 
     if (e)
-        e->activate();
+        e->activate(*m_character);
 
     return e;
 }

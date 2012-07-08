@@ -164,13 +164,21 @@ sf::Vector2i Character::getDisplayPos()
     return sf::Vector2i(m_sprite.getPosition().x, m_sprite.getPosition().y);
 }
 
-void Character::activate(sf::Vector2i pos)
+void Character::activateAt(sf::Vector2i pos)
 {
     Case* c = m_map.getCaseAt(pos);
 
     if (c != NULL)
     {
+        lookAt(pos);
         c->activate();
     }
+}
+
+void Character::lookAt(sf::Vector2i pos)
+{
+    float a = std::atan2(m_pos.y - pos.y, m_pos.x - pos.x);
+
+    m_dir = (int)(round((a + M_PI*2 + 7*M_PI/4) / M_PI_2)) % 4;
 }
 

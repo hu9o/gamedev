@@ -5,6 +5,7 @@
 
 class Map;
 class Case;
+class Character;
 
 /**
   * Classe Entity
@@ -33,7 +34,7 @@ class Entity
 
         bool operator<(Entity& e);
 
-        virtual bool activate();
+        virtual bool activate(Character& chara);
 
     protected:
         /// carte sur laquelle est l'entité
