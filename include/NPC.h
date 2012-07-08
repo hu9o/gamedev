@@ -16,7 +16,7 @@ class NPC : public Character
 
     protected:
         std::vector<std::string> m_messages;
-        uint m_messageNb;
+        unsigned int m_messageNb;
         std::string m_name;
 
     private:
