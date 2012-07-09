@@ -15,7 +15,8 @@
         "~" : { "terr":"sand", "objs":["water"] },
         "-" : { "terr":"sand", "objs":["water"] },
         "=" : { "terr":"dirt", "objs":["water"] },
-        "^" : { "terr":"dirt", "objs":["oil"] }
+        "^" : { "terr":"dirt", "objs":["oil"] },
+        "m" : { "terr":"sand", "objs":["oil"] }
     },
 
     "map" :
@@ -32,7 +33,7 @@
         "I%.;;;,T,,^^.I..",
         "..;c;;;,^^^^....",
         "..;;;.;^^^;;....",
-        ".I...^^^;;;;..I.",
+        ".I...^^^^;;;..I.",
         "....I.^^;;;.....",
         ".;c;..^;;;..I.%.",
         ";;;;;;;;;;c;;..."
@@ -40,7 +41,7 @@
 
 	"NPCs" :
 	[
-		{ "name":"MR LOBSTER", "xpos":2, "ypos":8, "skin":2, "message":["Salut!", "Belle journee, n'est-ce pas?", "J'ai pas grand chose de plus a dire..."] },
+		{ "name":"MR LOBSTER", "xpos":2, "ypos":8, "skin":2, "message":["Salut!", "Tu as vu tout ce beurk?", "Ca pue vraiment tres fort...", "Si seulement quelqu un pouvait nettoyer ca!"] },
 		{ "name":"GANJA FARMER", "xpos":10, "ypos":4, "skin":4, "message":["Bonjour!", "Je vends de l'herbe medicinale, vous en voulez?"] },
 		{ "name":"NUTCRACKER", "xpos":9, "ypos":12, "skin":21, "message":["Je sais compter jusqu'a cent!", "un...", "deux...", "trois...", "quatre...", "cinq...", "six...", "sept...", "huit...", "neuf...", "dix...", "onze...", "douze...", "treize...", "quatorze...", "quinze...", "seize...", "dix-sept...", "dix-huit...", "dix-neuf...", "vingt...", "vingt et un...", "vingt-deux...", "vingt-trois...", "vingt-quatre...", "vingt-cinq...", "vingt-six...", "vingt-sept...", "vingt-huit...", "vingt-neuf...", "vingt-dix...", "vingt-douze...", "euh...", "cinquante-quinze?", "je ne suis pas sur de la suite..."] }
 

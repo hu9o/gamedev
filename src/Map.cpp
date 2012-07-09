@@ -5,15 +5,15 @@
 #include "JSON.h"
 #include "StaticEntity.h"
 #include <sstream>
-
+/*
 Map::Map(int w, int h) :
     m_w(w),
     m_h(h),
     m_map(NULL),
-    m_character(NULL)
+    m_character(NULL),
+    m_messageBox(*this)
 {
     /// Charge le tileset
-
     loadTileset("gfx/tileset.png");
 
     /// Remplit
@@ -51,22 +51,10 @@ Map::Map(int w, int h) :
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 
-    ///Barre d'XP
-
-    ///Cadre
-    m_expBarImg.loadFromFile("gfx/expbar.png");
-    m_expBar.setTexture(m_expBarImg);
-    m_expBar.setPosition(550,20);
-    m_expBar.setTextureRect(sf::IntRect(0,0,200,20));
-
-    ///Contenu
-    m_expBarBisImg.loadFromFile("gfx/expbar.png");
-    m_expBarBis.setTexture(m_expBarBisImg);
-    m_expBarBis.setPosition(550,20);
-    m_expBarBis.setTextureRect(sf::IntRect(0,20,0,20));
+    initXP();
 }
-
-Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
+*/
+Map::Map(std::string nom) : m_map(NULL), m_messageBox(*this), m_character(NULL)
 {
     m_w = 0;
     m_h = 0;
@@ -284,19 +272,18 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 
-    ///Barre d'XP
+    /// Barre d'XP
+    m_fontLoaded = false;
 
-    ///Cadre
-    m_expBarImg.loadFromFile("gfx/expbar.png");
-    m_expBar.setTexture(m_expBarImg);
-    m_expBar.setPosition(550,20);
-    m_expBar.setTextureRect(sf::IntRect(0,0,200,20));
+    initXP();
+}
 
-    ///Contenu
-    m_expBarBisImg.loadFromFile("gfx/expbar.png");
-    m_expBarBis.setTexture(m_expBarBisImg);
-    m_expBarBis.setPosition(550,20);
-    m_expBarBis.setTextureRect(sf::IntRect(0,20,0,20));
+sf::Font& Map::getFont()
+{
+    if (!m_fontLoaded)
+        m_font.loadFromFile("fonts/minecraftia.ttf");
+
+    return m_font;
 }
 
 Map::~Map()
@@ -314,6 +301,29 @@ Map::~Map()
     }
 
     delete m_map;
+}
+
+void Map::initXP()
+{
+    ///Barre d'XP
+
+    m_expBarVal = 0;
+
+    ///Cadre
+    m_expBarTex.loadFromFile("gfx/expbar.png");
+
+    m_expBarBorder.setTexture(m_expBarTex);
+    m_expBarBorder.setPosition(300, 566);
+    m_expBarBorder.setTextureRect(sf::IntRect(0,0,200,20));
+
+    ///Contenu
+    m_expBarFill.setTexture(m_expBarTex);
+    m_expBarFill.setPosition(300, 566);
+    m_expBarFill.setTextureRect(sf::IntRect(0,20,0,20));
+
+    /// Texte
+    m_expBarLevelText.setCharacterSize(12);
+    m_expBarLevelText.setFont(getFont());
 }
 
 void Map::loadTileset(std::string path)
@@ -346,9 +356,15 @@ void Map::affiche(sf::RenderWindow& app)
     app.draw(m_curs);
 
     /// Affiche la barre d'expérience
-    m_expBarBis.setTextureRect(sf::IntRect(0,20,(m_character->getExp()*2)%200,20));
-    app.draw(m_expBarBis);
-    app.draw(m_expBar);
+    std::stringstream ss;
+    m_expBarVal = m_expBarVal + (m_character->getExp()*2 - m_expBarVal)/5;
+    ss << "Lvl "<<m_character->getLevel()<< " - XP: " <<m_character->getExp()<<"/"<<m_character->getMaxExp();
+    m_expBarFill.setTextureRect(sf::IntRect(0,20,m_expBarVal,20));
+    m_expBarLevelText.setString(ss.str());
+    m_expBarLevelText.setPosition(400 - m_expBarLevelText.getLocalBounds().width/2, 569);
+    app.draw(m_expBarBorder);
+    app.draw(m_expBarFill);
+    app.draw(m_expBarLevelText);
 
     /// Affiche les entités
 
@@ -416,21 +432,15 @@ Entity* Map::activateEntityAt(sf::Vector2i pos)
 
 void Map::say(NPC& npc, std::string msg)
 {
-    //std::cout << npc.getName() << ": " << msg << std::endl;
-
-    m_messageBox.show(npc.getName() + ": " + msg);
+    display(npc.getName() + ": " + msg);
 }
 
-void Map::displayXP()
+void Map::display(std::string msg)
 {
-    int i = m_character->getExp();
-    std::string s;
-    std::stringstream out;
-    out << i;
-    s = out.str();
-
-    m_messageBox.show(s + " PX");
+    m_messageBox.show(msg);
 }
+
+
 
 void Map::mouseMove(sf::Event evt)
 {

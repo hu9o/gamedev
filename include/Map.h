@@ -28,7 +28,7 @@ class Map
     public:
 
         // Cteur, dteur
-        Map(int w, int h);
+        //Map(int w, int h);
         Map(std::string nom);
         virtual ~Map();
 
@@ -83,8 +83,10 @@ class Map
 
         Entity* getEntityAt(sf::Vector2i pos);
         Entity* activateEntityAt(sf::Vector2i pos);
+        void display(std::string msg);
         void say(NPC& npc, std::string msg);
-        void displayXP();
+
+        sf::Font& getFont();
 
     protected:
 
@@ -119,11 +121,11 @@ class Map
 
         struct MessageBox
         {
-            MessageBox()
+            MessageBox(Map& map) : m_map(map)
             {
-                 m_font.loadFromFile("fonts/minecraftia.ttf");
                  m_text = NULL;
                  m_counter = 0;
+                 m_font = &m_map.getFont();
             }
 
             void show(std::string msg)
@@ -136,7 +138,7 @@ class Map
 
                  m_text = new sf::Text(msg);
                  m_text->setPosition(10, 10);
-                 m_text->setFont(m_font);
+                 m_text->setFont(*m_font);
                  m_text->setCharacterSize(16);
 
                  std::cout << "AFFICHE!" << std::endl;
@@ -157,12 +159,12 @@ class Map
             }
 
 
-            sf::Font m_font;
+            sf::Font* m_font;
             sf::Text* m_text;
             int m_counter;
+            Map& m_map;
         };
 
-        MessageBox m_messageBox;
 
         /// largeur et hauteur de la map
         int m_w, m_h;
@@ -170,26 +172,34 @@ class Map
         Case*** m_map;
         sf::Texture m_tileset;
 
+        MessageBox m_messageBox;
+
+
         sf::Sprite m_curs;
         sf::Texture m_cursImg;
         sf::Vector2i m_cursPos;
 
         ///Je sais, c'est moche, mais j'ai pas osé créer une classe
-        sf::Sprite m_expBar;
-        sf::Texture m_expBarImg;
-        sf::Sprite m_expBarBis;
-        sf::Texture m_expBarBisImg;
+        sf::Texture m_expBarTex;
+        sf::Sprite m_expBarBorder;
+        sf::Sprite m_expBarFill;
+        sf::Text m_expBarLevelText;
+        int m_expBarVal;
+
+        bool m_fontLoaded;
 
         sf::Clock m_clock;
 
         std::list<Entity*> m_entities;
         Character* m_character;
 
+        sf::Font m_font;
 
         // MÉTHODES
 
         /// charge le tileset
         void loadTileset(std::string);
+        void initXP();
 
         void setCursorPos(sf::Vector2f v);
         sf::Vector2f getCursorPos();

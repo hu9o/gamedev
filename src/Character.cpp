@@ -1,5 +1,6 @@
 #include "Character.h"
 #include "Map.h"
+#include <sstream>
 
 Character::Character(Map& map) : Entity(map)
 {
@@ -18,6 +19,8 @@ Character::Character(Map& map) : Entity(map)
     m_speed = 1.8;
     m_skin = 0;
     m_exp = 0;
+    m_maxExp = 100;
+    m_lvl = 1;
 
     m_caseToActivate = NULL;
 }
@@ -144,8 +147,21 @@ void Character::move()
             {
                 if(m_caseToActivate->activate())
                 {
+                    std::stringstream ss;
+                    ss << "+10px";
+
                     m_exp += 10;
-                    m_map.displayXP();
+
+                    if (m_exp >= m_maxExp)
+                    {
+                        m_maxExp *= 1.2;
+                        m_exp = 0;
+                        m_lvl++;
+
+                        ss << " : LEVEL UP!";
+                    }
+
+                    m_map.display(ss.str());
                 }
             }
         }
@@ -169,6 +185,16 @@ sf::Vector2i Character::getDisplayPos()
 int Character::getExp()
 {
     return m_exp;
+}
+
+int Character::getMaxExp()
+{
+    return m_maxExp;
+}
+
+int Character::getLevel()
+{
+    return m_lvl;
 }
 
 void Character::activateAt(sf::Vector2i pos)
