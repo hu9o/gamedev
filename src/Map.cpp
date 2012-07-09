@@ -54,16 +54,15 @@ Map::Map(int w, int h) :
     ///Barre d'XP
 
     ///Cadre
-    m_expBarImg.loadFromFile("gfx/expbar.png");
-    m_expBar.setTexture(m_expBarImg);
-    m_expBar.setPosition(550,20);
-    m_expBar.setTextureRect(sf::IntRect(0,0,200,20));
+    m_expBarTex.loadFromFile("gfx/expbar.png");
+    m_expBarBorder.setTexture(m_expBarTex);
+    m_expBarBorder.setPosition(550,20);
+    m_expBarBorder.setTextureRect(sf::IntRect(0,0,200,20));
 
     ///Contenu
-    m_expBarBisImg.loadFromFile("gfx/expbar.png");
-    m_expBarBis.setTexture(m_expBarBisImg);
-    m_expBarBis.setPosition(550,20);
-    m_expBarBis.setTextureRect(sf::IntRect(0,20,0,20));
+    m_expBarFill.setTexture(m_expBarTex);
+    m_expBarFill.setPosition(550,20);
+    m_expBarFill.setTextureRect(sf::IntRect(0,20,0,20));
 }
 
 Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
@@ -287,16 +286,15 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
     ///Barre d'XP
 
     ///Cadre
-    m_expBarImg.loadFromFile("gfx/expbar.png");
-    m_expBar.setTexture(m_expBarImg);
-    m_expBar.setPosition(550,20);
-    m_expBar.setTextureRect(sf::IntRect(0,0,200,20));
+    m_expBarTex.loadFromFile("gfx/expbar.png");
+    m_expBarBorder.setTexture(m_expBarTex);
+    m_expBarBorder.setPosition(550,20);
+    m_expBarBorder.setTextureRect(sf::IntRect(0,0,200,20));
 
     ///Contenu
-    m_expBarBisImg.loadFromFile("gfx/expbar.png");
-    m_expBarBis.setTexture(m_expBarBisImg);
-    m_expBarBis.setPosition(550,20);
-    m_expBarBis.setTextureRect(sf::IntRect(0,20,0,20));
+    m_expBarFill.setTexture(m_expBarTex);
+    m_expBarFill.setPosition(550,20);
+    m_expBarFill.setTextureRect(sf::IntRect(0,20,0,20));
 }
 
 Map::~Map()
@@ -346,9 +344,9 @@ void Map::affiche(sf::RenderWindow& app)
     app.draw(m_curs);
 
     /// Affiche la barre d'expérience
-    m_expBarBis.setTextureRect(sf::IntRect(0,20,(m_character->getExp()*2)%200,20));
-    app.draw(m_expBarBis);
-    app.draw(m_expBar);
+    m_expBarFill.setTextureRect(sf::IntRect(0,20,(m_character->getExp()*2)%200,20));
+    app.draw(m_expBarBorder);
+    app.draw(m_expBarFill);
 
     /// Affiche les entités
 

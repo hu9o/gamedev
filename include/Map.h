@@ -175,10 +175,11 @@ class Map
         sf::Vector2i m_cursPos;
 
         ///Je sais, c'est moche, mais j'ai pas osé créer une classe
-        sf::Sprite m_expBar;
-        sf::Texture m_expBarImg;
-        sf::Sprite m_expBarBis;
-        sf::Texture m_expBarBisImg;
+        sf::Texture m_expBarTex;
+        sf::Sprite m_expBarBorder;
+        sf::Sprite m_expBarFill;
+        sf::Text m_expBarLevelText;
+        int m_expBarVal;
 
         sf::Clock m_clock;
 
