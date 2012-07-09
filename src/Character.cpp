@@ -145,21 +145,24 @@ void Character::move()
 
             if (m_caseToActivate != NULL)
             {
-                std::stringstream ss;
-                ss << "+10px";
-
-                m_exp += 10;
-
-                if (m_exp >= m_maxExp)
+                if(m_caseToActivate->activate())
                 {
-                    m_exp -= m_maxExp;
-                    m_maxExp *= 1.2;
-                    m_lvl++;
+                    std::stringstream ss;
+                    ss << "+10px";
 
-                    ss << " : LEVEL UP!";
+                    m_exp += 10;
+
+                    if (m_exp >= m_maxExp)
+                    {
+                        m_exp -= m_maxExp;
+                        m_maxExp *= 1.2;
+                        m_lvl++;
+
+                        ss << " : LEVEL UP!";
+                    }
+
+                    m_map.display(ss.str());
                 }
-
-                //m_map.display(ss.str());
             }
         }
     }

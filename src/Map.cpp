@@ -422,22 +422,15 @@ Entity* Map::activateEntityAt(sf::Vector2i pos)
     return e;
 }
 
+
 void Map::say(NPC& npc, std::string msg)
 {
-    //std::cout << npc.getName() << ": " << msg << std::endl;
-
-    m_messageBox.show(npc.getName() + ": " + msg);
+    display(npc.getName() + ": " + msg);
 }
 
-void Map::displayXP()
+void Map::display(std::string msg)
 {
-    int i = m_character->getExp();
-    std::string s;
-    std::stringstream out;
-    out << i;
-    s = out.str();
-
-    m_messageBox.show(s + " PX");
+    m_messageBox.show(msg);
 }
 
 void Map::mouseMove(sf::Event evt)
