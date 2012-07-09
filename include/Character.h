@@ -33,6 +33,8 @@ class Character : public Entity
 
         sf::Vector2i getDisplayPos();
         int getExp();
+        int getMaxExp();
+        int getLevel();
         void activateAt(sf::Vector2i pos);
         void lookAt(sf::Vector2i pos);
 
@@ -45,8 +47,11 @@ class Character : public Entity
         float m_speed;
         int m_dir; // remplacer par une enum?
         int m_skin;
-        int m_exp;
         bool m_moving;
+
+        int m_exp;
+        int m_maxExp;
+        int m_lvl;
 
         std::deque<sf::Vector2i> m_movementQueue;
 
