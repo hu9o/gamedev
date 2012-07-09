@@ -152,8 +152,8 @@ void Character::move()
 
                 if (m_exp >= m_maxExp)
                 {
+                    m_exp -= m_maxExp;
                     m_maxExp *= 1.2;
-                    m_exp = 0;
                     m_lvl++;
 
                     ss << " : LEVEL UP!";

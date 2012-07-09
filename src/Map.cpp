@@ -348,9 +348,15 @@ void Map::affiche(sf::RenderWindow& app)
     app.draw(m_curs);
 
     /// Affiche la barre d'expérience
-    m_expBarFill.setTextureRect(sf::IntRect(0,20,(m_character->getExp()*2)%200,20));
+    std::stringstream ss;
+    m_expBarVal = m_expBarVal + (((float)m_character->getExp()/m_character->getMaxExp())*200 - m_expBarVal)/5;
+    ss << "Lvl "<<m_character->getLevel()<< " - XP: " <<m_character->getExp()<<"/"<<m_character->getMaxExp();
+    m_expBarFill.setTextureRect(sf::IntRect(0,20,m_expBarVal,20));
+    m_expBarLevelText.setString(ss.str());
+    m_expBarLevelText.setPosition(400 - m_expBarLevelText.getLocalBounds().width/2, 569);
     app.draw(m_expBarBorder);
     app.draw(m_expBarFill);
+    app.draw(m_expBarLevelText);
 
     /// Affiche les entités
 
