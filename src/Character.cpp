@@ -4,6 +4,16 @@
 
 Character::Character(Map& map) : Entity(map)
 {
+    init();
+}
+
+Character::~Character()
+{
+    //dtor
+}
+
+void Character::init()
+{
     // charge image
     if (!m_image.loadFromFile("gfx/charset.png"))
     {
@@ -22,12 +32,8 @@ Character::Character(Map& map) : Entity(map)
     m_maxExp = 100;
     m_lvl = 1;
 
-    m_caseToActivate = NULL;
-}
 
-Character::~Character()
-{
-    //dtor
+    m_caseToActivate = NULL;
 }
 
 void Character::affiche(sf::RenderWindow& app)
@@ -154,8 +160,8 @@ void Character::move()
 
                     if (m_exp >= m_maxExp)
                     {
+                        m_exp -= m_maxExp;
                         m_maxExp *= 1.2;
-                        m_exp = 0;
                         m_lvl++;
 
                         ss << " : LEVEL UP!";
@@ -186,7 +192,6 @@ int Character::getExp()
 {
     return m_exp;
 }
-
 int Character::getMaxExp()
 {
     return m_maxExp;

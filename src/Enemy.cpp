@@ -76,7 +76,8 @@ void Enemy::move()
                                      && m_map.isWalkable(x, m_pos.y) && (m_type != "scum" || !m_map.getCaseAt(x, m_pos.y)->isClean())
                                      )
                         )
-                   )
+                    )
+
                     nbWalkables++;
             }
         }

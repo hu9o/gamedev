@@ -83,10 +83,8 @@ class Map
 
         Entity* getEntityAt(sf::Vector2i pos);
         Entity* activateEntityAt(sf::Vector2i pos);
-        void display(std::string msg);
         void say(NPC& npc, std::string msg);
-
-        sf::Font& getFont();
+        void display(std::string msg);
 
     protected:
 
@@ -123,23 +121,16 @@ class Map
         {
             MessageBox(Map& map) : m_map(map)
             {
-                 m_text = NULL;
                  m_counter = 0;
-                 m_font = &m_map.getFont();
             }
 
             void show(std::string msg)
             {
-                 // Create a text
-                 if (m_text != NULL)
-                    delete m_text;
-
                 m_counter = 48;
-
-                 m_text = new sf::Text(msg);
-                 m_text->setPosition(10, 10);
-                 m_text->setFont(*m_font);
-                 m_text->setCharacterSize(16);
+                 m_text.setString(msg);
+                 m_text.setPosition(10, 10);
+                 m_text.setFont(m_font);
+                 m_text.setCharacterSize(16);
 
                  std::cout << "AFFICHE!" << std::endl;
             }
@@ -149,18 +140,22 @@ class Map
                  // Draw it
                  if (m_counter > 0)
                  {
-                     if (m_counter < 44 && m_text != NULL)
+                     if (m_counter < 44)
                      {
-                         m_text->setPosition(10, 10 - (m_counter < 34? (m_counter < 5? 5-m_counter : 0 )*2 : m_counter-34)*3);
-                        app.draw(*m_text);
+                         m_text.setPosition(10, 10 - (m_counter < 34? (m_counter < 5? 5-m_counter : 0 )*2 : m_counter-34)*3);
+                        app.draw(m_text);
                      }
                     m_counter--;
                 }
             }
 
+            void setFont(sf::Font font)
+            {
+                m_font = font;
+            }
 
-            sf::Font* m_font;
-            sf::Text* m_text;
+            sf::Font m_font;
+            sf::Text m_text;
             int m_counter;
             Map& m_map;
         };
@@ -185,8 +180,6 @@ class Map
         sf::Sprite m_expBarFill;
         sf::Text m_expBarLevelText;
         int m_expBarVal;
-
-        bool m_fontLoaded;
 
         sf::Clock m_clock;
 

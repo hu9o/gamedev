@@ -51,6 +51,10 @@ Map::Map(int w, int h) :
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 
+    /// Fonte
+    m_font.loadFromFile("fonts/minecraftia.ttf");
+
+    ///Barre d'XP
     initXP();
 }
 */
@@ -218,6 +222,11 @@ Map::Map(std::string nom) : m_map(NULL), m_messageBox(*this), m_character(NULL)
                         maCase->setClean(false);
                     }
 
+                    if (caseObj.HasMember("trigger") && caseObj["trigger"].GetBool())
+                    {
+                        maCase->setTrigger(true);
+                    }
+
                     coutObj += caseObj["cost"].GetInt();
                     maCase->setAutoTile(caseObj.HasMember("auto")? caseObj["auto"].GetBool():false);
                 }
@@ -272,41 +281,20 @@ Map::Map(std::string nom) : m_map(NULL), m_messageBox(*this), m_character(NULL)
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 
-    /// Barre d'XP
-    m_fontLoaded = false;
+    /// Fonte
+    m_font.loadFromFile("fonts/minecraftia.ttf");
+    m_messageBox.setFont(m_font);
 
+    ///Barre d'XP
     initXP();
-}
 
-sf::Font& Map::getFont()
-{
-    if (!m_fontLoaded)
-        m_font.loadFromFile("fonts/minecraftia.ttf");
 
-    return m_font;
-}
-
-Map::~Map()
-{
-    /// Vide la map
-
-    for (int i = 0; i<m_w; i++)
-    {
-        for (int j = 0; j<m_h; j++)
-        {
-            delete m_map[i][j];
-        }
-
-        delete[] m_map[i];
-    }
-
-    delete m_map;
+	new Character(*this);
+    m_character->setPosition(sf::Vector2i(objetMap["startpos"]["x"].GetInt(), objetMap["startpos"]["y"].GetInt()));
 }
 
 void Map::initXP()
 {
-    ///Barre d'XP
-
     m_expBarVal = 0;
 
     ///Cadre
@@ -323,7 +311,25 @@ void Map::initXP()
 
     /// Texte
     m_expBarLevelText.setCharacterSize(12);
-    m_expBarLevelText.setFont(getFont());
+    m_expBarLevelText.setFont(m_font);
+}
+
+
+Map::~Map()
+{
+    /// Vide la map
+
+    for (int i = 0; i<m_w; i++)
+    {
+        for (int j = 0; j<m_h; j++)
+        {
+            delete m_map[i][j];
+        }
+
+        delete[] m_map[i];
+    }
+
+    delete m_map;
 }
 
 void Map::loadTileset(std::string path)
@@ -357,11 +363,11 @@ void Map::affiche(sf::RenderWindow& app)
 
     /// Affiche la barre d'expérience
     std::stringstream ss;
-    m_expBarVal = m_expBarVal + (m_character->getExp()*2 - m_expBarVal)/5;
+    m_expBarVal = m_expBarVal + (((float)m_character->getExp()/m_character->getMaxExp())*200 - m_expBarVal)/5;
     ss << "Lvl "<<m_character->getLevel()<< " - XP: " <<m_character->getExp()<<"/"<<m_character->getMaxExp();
     m_expBarFill.setTextureRect(sf::IntRect(0,20,m_expBarVal,20));
     m_expBarLevelText.setString(ss.str());
-    m_expBarLevelText.setPosition(400 - m_expBarLevelText.getLocalBounds().width/2, 569);
+    m_expBarLevelText.setPosition((int)(400 - m_expBarLevelText.getLocalBounds().width/2), 569);
     app.draw(m_expBarBorder);
     app.draw(m_expBarFill);
     app.draw(m_expBarLevelText);
@@ -429,6 +435,7 @@ Entity* Map::activateEntityAt(sf::Vector2i pos)
 
     return e;
 }
+
 
 void Map::say(NPC& npc, std::string msg)
 {

@@ -13,6 +13,8 @@ Case::Case(Map& map, int x, int y) :
     relativeObjectImagePos.x = 0;
     relativeObjectImagePos.y = 0;
     m_autoTile = false;
+    m_triggerable = false;
+    m_triggered = false;
 }
 
 Case::~Case()
@@ -27,11 +29,20 @@ void Case::affiche(sf::RenderWindow& app)
 
     if(hasObject())
     {
-        if (!m_autoTile)
+        if (!m_autoTile && !m_triggerable)
         {
             app.draw(getObjet());
         }
-        else
+        else if (m_triggerable)
+        {
+            sf::IntRect r = m_objet.getTextureRect();
+            sf::IntRect s = m_objet.getTextureRect();
+            r.top += (m_triggered)? 0 : Case::HEIGHT;
+            m_objet.setTextureRect(r);
+            app.draw(m_objet);
+            m_objet.setTextureRect(s);
+        }
+        else if (m_autoTile)
         {
             sf::Sprite plop(*m_texture);
             sf::IntRect r(0*Case::WIDTH + Case::WIDTH/2,
@@ -129,12 +140,12 @@ void Case::setObject(int x, int y, int w, int h)
     m_isObject = true;
 }
 
-sf::Sprite Case::getTerrain()
+sf::Sprite& Case::getTerrain()
 {
     return m_terrain;
 }
 
-sf::Sprite Case::getObjet()
+sf::Sprite& Case::getObjet()
 {
     return m_objet;
 }
@@ -178,6 +189,12 @@ bool Case::activate()
             m_isClean = true;
             actionPerformed = true;
         }
+
+        if(m_triggerable)
+        {
+            m_triggered = !m_triggered;
+            std::cout << (m_triggered? "flip":"flop") << std::endl;
+        }
     }
 
     return actionPerformed;
@@ -186,4 +203,14 @@ bool Case::activate()
 bool Case::isClean()
 {
     return m_isClean;
+}
+
+void Case::setTrigger(bool val)
+{
+    m_triggerable = val;
+}
+
+bool Case::isTriggered()
+{
+    return m_triggered;
 }
