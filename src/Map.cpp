@@ -52,17 +52,7 @@ Map::Map(int w, int h) :
     m_curs.setTexture(m_cursImg);
 
     ///Barre d'XP
-
-    ///Cadre
-    m_expBarTex.loadFromFile("gfx/expbar.png");
-    m_expBarBorder.setTexture(m_expBarTex);
-    m_expBarBorder.setPosition(550,20);
-    m_expBarBorder.setTextureRect(sf::IntRect(0,0,200,20));
-
-    ///Contenu
-    m_expBarFill.setTexture(m_expBarTex);
-    m_expBarFill.setPosition(550,20);
-    m_expBarFill.setTextureRect(sf::IntRect(0,20,0,20));
+    initXP();
 }
 
 Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
@@ -283,19 +273,33 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 
+
     ///Barre d'XP
+    initXP();
+
+}
+
+void Map::initXP()
+{
+    m_expBarVal = 0;
 
     ///Cadre
     m_expBarTex.loadFromFile("gfx/expbar.png");
+
     m_expBarBorder.setTexture(m_expBarTex);
-    m_expBarBorder.setPosition(550,20);
+    m_expBarBorder.setPosition(300, 566);
     m_expBarBorder.setTextureRect(sf::IntRect(0,0,200,20));
 
     ///Contenu
     m_expBarFill.setTexture(m_expBarTex);
-    m_expBarFill.setPosition(550,20);
+    m_expBarFill.setPosition(300, 566);
     m_expBarFill.setTextureRect(sf::IntRect(0,20,0,20));
+
+    /// Texte
+    m_expBarLevelText.setCharacterSize(12);
+    //m_expBarLevelText.setFont(getFont());
 }
+
 
 Map::~Map()
 {

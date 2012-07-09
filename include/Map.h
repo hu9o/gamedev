@@ -191,6 +191,7 @@ class Map
 
         /// charge le tileset
         void loadTileset(std::string);
+        void initXP();
 
         void setCursorPos(sf::Vector2f v);
         sf::Vector2f getCursorPos();
