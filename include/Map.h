@@ -174,6 +174,12 @@ class Map
         sf::Texture m_cursImg;
         sf::Vector2i m_cursPos;
 
+        ///Je sais, c'est moche, mais j'ai pas osé créer une classe
+        sf::Sprite m_expBar;
+        sf::Texture m_expBarImg;
+        sf::Sprite m_expBarBis;
+        sf::Texture m_expBarBisImg;
+
         sf::Clock m_clock;
 
         std::list<Entity*> m_entities;
