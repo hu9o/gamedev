@@ -55,8 +55,9 @@ class Character : public Entity
 
         std::deque<sf::Vector2i> m_movementQueue;
 
-
         sf::Vector2f spritePos(sf::Vector2i v);
+
+        void init();
     private:
 };
 

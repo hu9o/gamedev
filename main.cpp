@@ -15,9 +15,6 @@ int main()
     //Chargement de la map (à partir d'un fichier)
     Map carte("default-map");
 
-    //Création du perso
-    Character perso(carte);
-
     // Start the game loop
     while (App.isOpen())
     {

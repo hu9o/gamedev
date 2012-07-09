@@ -4,6 +4,16 @@
 
 Character::Character(Map& map) : Entity(map)
 {
+    init();
+}
+
+Character::~Character()
+{
+    //dtor
+}
+
+void Character::init()
+{
     // charge image
     if (!m_image.loadFromFile("gfx/charset.png"))
     {
@@ -22,12 +32,8 @@ Character::Character(Map& map) : Entity(map)
     m_maxExp = 100;
     m_lvl = 1;
 
-    m_caseToActivate = NULL;
-}
 
-Character::~Character()
-{
-    //dtor
+    m_caseToActivate = NULL;
 }
 
 void Character::affiche(sf::RenderWindow& app)

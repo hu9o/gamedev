@@ -222,6 +222,11 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
                         maCase->setClean(false);
                     }
 
+                    if (caseObj.HasMember("trigger") && caseObj["trigger"].GetBool())
+                    {
+                        maCase->setTrigger(true);
+                    }
+
                     coutObj += caseObj["cost"].GetInt();
                     maCase->setAutoTile(caseObj.HasMember("auto")? caseObj["auto"].GetBool():false);
                 }
@@ -284,6 +289,9 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
     ///Barre d'XP
     initXP();
 
+
+	new Character(*this);
+    m_character->setPosition(sf::Vector2i(objetMap["startpos"]["x"].GetInt(), objetMap["startpos"]["y"].GetInt()));
 }
 
 void Map::initXP()
@@ -360,7 +368,7 @@ void Map::affiche(sf::RenderWindow& app)
     ss << "Lvl "<<m_character->getLevel()<< " - XP: " <<m_character->getExp()<<"/"<<m_character->getMaxExp();
     m_expBarFill.setTextureRect(sf::IntRect(0,20,m_expBarVal,20));
     m_expBarLevelText.setString(ss.str());
-    m_expBarLevelText.setPosition(400 - m_expBarLevelText.getLocalBounds().width/2, 569);
+    m_expBarLevelText.setPosition((int)(400 - m_expBarLevelText.getLocalBounds().width/2), 569);
     app.draw(m_expBarBorder);
     app.draw(m_expBarFill);
     app.draw(m_expBarLevelText);

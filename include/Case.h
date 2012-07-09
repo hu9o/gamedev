@@ -39,8 +39,8 @@ class Case
         void setClean(bool clean);
         void setAutoTile(bool autoTile = true);
 
-        sf::Sprite getTerrain();
-        sf::Sprite getObjet();
+        sf::Sprite& getTerrain();
+        sf::Sprite& getObjet();
 
         bool hasObject();
         bool isWalkable();
@@ -52,6 +52,8 @@ class Case
 
         bool activate();
         bool isClean();
+        void setTrigger(bool val);
+        bool isTriggered();
 
     protected:
         /// Carte parente
@@ -81,4 +83,7 @@ class Case
         sf::Sprite m_objet;
 
         sf::Texture* m_texture;
+
+        bool m_triggerable;
+        bool m_triggered;
 };
