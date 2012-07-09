@@ -51,6 +51,9 @@ Map::Map(int w, int h) :
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 
+    /// Fonte
+    m_font.loadFromFile("fonts/minecraftia.ttf");
+
     ///Barre d'XP
     initXP();
 }
@@ -274,6 +277,10 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
     m_curs.setTexture(m_cursImg);
 
 
+    /// Fonte
+    m_font.loadFromFile("fonts/minecraftia.ttf");
+    m_messageBox.setFont(m_font);
+
     ///Barre d'XP
     initXP();
 
@@ -297,7 +304,7 @@ void Map::initXP()
 
     /// Texte
     m_expBarLevelText.setCharacterSize(12);
-    //m_expBarLevelText.setFont(getFont());
+    m_expBarLevelText.setFont(m_font);
 }
 
 
