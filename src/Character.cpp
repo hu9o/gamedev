@@ -202,7 +202,6 @@ int Character::getLevel()
     return m_lvl;
 }
 
-
 void Character::activateAt(sf::Vector2i pos)
 {
     Case* c = m_map.getCaseAt(pos);

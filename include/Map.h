@@ -28,7 +28,7 @@ class Map
     public:
 
         // Cteur, dteur
-        Map(int w, int h);
+        //Map(int w, int h);
         Map(std::string nom);
         virtual ~Map();
 
@@ -119,7 +119,7 @@ class Map
 
         struct MessageBox
         {
-            MessageBox()
+            MessageBox(Map& map) : m_map(map)
             {
                  m_counter = 0;
             }
@@ -127,7 +127,6 @@ class Map
             void show(std::string msg)
             {
                 m_counter = 48;
-
                  m_text.setString(msg);
                  m_text.setPosition(10, 10);
                  m_text.setFont(m_font);
@@ -155,19 +154,21 @@ class Map
                 m_font = font;
             }
 
-
             sf::Font m_font;
             sf::Text m_text;
             int m_counter;
+            Map& m_map;
         };
 
-        MessageBox m_messageBox;
 
         /// largeur et hauteur de la map
         int m_w, m_h;
 
         Case*** m_map;
         sf::Texture m_tileset;
+
+        MessageBox m_messageBox;
+
 
         sf::Sprite m_curs;
         sf::Texture m_cursImg;

@@ -5,15 +5,15 @@
 #include "JSON.h"
 #include "StaticEntity.h"
 #include <sstream>
-
+/*
 Map::Map(int w, int h) :
     m_w(w),
     m_h(h),
     m_map(NULL),
-    m_character(NULL)
+    m_character(NULL),
+    m_messageBox(*this)
 {
     /// Charge le tileset
-
     loadTileset("gfx/tileset.png");
 
     /// Remplit
@@ -57,8 +57,8 @@ Map::Map(int w, int h) :
     ///Barre d'XP
     initXP();
 }
-
-Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
+*/
+Map::Map(std::string nom) : m_map(NULL), m_messageBox(*this), m_character(NULL)
 {
     m_w = 0;
     m_h = 0;
@@ -281,7 +281,6 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 
-
     /// Fonte
     m_font.loadFromFile("fonts/minecraftia.ttf");
     m_messageBox.setFont(m_font);
@@ -447,6 +446,8 @@ void Map::display(std::string msg)
 {
     m_messageBox.show(msg);
 }
+
+
 
 void Map::mouseMove(sf::Event evt)
 {
