@@ -12,6 +12,7 @@ Case::Case(Map& map, int x, int y) :
     m_terrainCost = 10;
     relativeObjectImagePos.x = 0;
     relativeObjectImagePos.y = 0;
+    m_autoTile = false;
 }
 
 Case::~Case()
@@ -19,10 +20,67 @@ Case::~Case()
     //dtor
 }
 
-void Case::setTex(sf::Texture* m_tile)
+
+void Case::affiche(sf::RenderWindow& app)
 {
-    m_terrain.setTexture(*m_tile);
-    m_objet.setTexture(*m_tile);
+    app.draw(getTerrain());
+
+    if(hasObject())
+    {
+        if (!m_autoTile)
+        {
+            app.draw(getObjet());
+        }
+        else
+        {
+            sf::Sprite plop(*m_texture);
+            sf::IntRect r(0*Case::WIDTH + Case::WIDTH/2,
+                                 5*Case::HEIGHT + Case::HEIGHT/2,
+                                 Case::WIDTH/2,
+                                 Case::HEIGHT/2);
+
+            sf::Vector2i& pos = m_pos;
+
+            bool test = true;
+
+            bool top = test && m_map.getCaseAt(m_intpos.x, m_intpos.y-1)->isClean();
+            bool bottom = test && m_map.getCaseAt(m_intpos.x, m_intpos.y+1)->isClean();
+            bool left = test && m_map.getCaseAt(m_intpos.x-1, m_intpos.y)->isClean();
+            bool right = test && m_map.getCaseAt(m_intpos.x+1, m_intpos.y)->isClean();
+
+            plop.setTextureRect(sf::IntRect(r.left - (left? Case::WIDTH/2 : 0), r.top - (top? Case::HEIGHT/2 : 0), r.width, r.height));
+            plop.setPosition(pos.x + 12, pos.y);
+            app.draw(plop);
+
+
+            plop.setTextureRect(sf::IntRect(r.left + (right? Case::WIDTH/2 : 0), r.top + (bottom? Case::HEIGHT/2 : 0), r.width, r.height));
+            plop.setPosition(pos.x + 12, pos.y + 16);
+            app.draw(plop);
+
+
+            plop.setTextureRect(sf::IntRect(r.left - (left? Case::WIDTH/2 : 0), r.top + (bottom? Case::HEIGHT/2 : 0), r.width, r.height));
+            plop.setPosition(pos.x, pos.y + 8);
+            app.draw(plop);
+
+
+            plop.setTextureRect(sf::IntRect(r.left + (right? Case::WIDTH/2 : 0), r.top - (top? Case::HEIGHT/2 : 0), r.width, r.height));
+            plop.setPosition(pos.x+24, pos.y + 8);
+            app.draw(plop);
+
+        }
+    }
+}
+
+void Case::setTex(sf::Texture* tex)
+{
+    m_texture = tex;
+    m_terrain.setTexture(*tex);
+    m_objet.setTexture(*tex);
+}
+
+void Case::setAutoTile(bool autoTile)
+{
+    m_autoTile = autoTile;
 }
 
 void Case::setPos(float x, float y)
@@ -108,7 +166,7 @@ void Case::setTerrainCost(int cost)
 
 bool Case::activate()
 {
-    bool test = false;
+    bool actionPerformed = false;
     std::cout << "active!" << std::endl;
 
     if (m_map.activateEntityAt(m_intpos) == NULL)
@@ -118,11 +176,11 @@ bool Case::activate()
             m_isObject = false;
             m_objectCost = 0;
             m_isClean = true;
-            test = true;
+            actionPerformed = true;
         }
     }
 
-    return test;
+    return actionPerformed;
 }
 
 bool Case::isClean()

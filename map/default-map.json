@@ -49,6 +49,6 @@
 	"enemies" :
 	[
 		{ "name":"Nonflying Lizard", "type":"scum", "skin":51, "xpos": 7, "ypos":11 },
-		{ "name":"Bandage Golem", "type":"scum", "skin":52, "xpos": 7, "ypos":11 }
+		{ "name":"Bandage Golem", "type":"scum", "skin":52, "xpos": 10, "ypos":10 }
 	]
 }

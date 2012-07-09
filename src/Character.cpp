@@ -39,9 +39,6 @@ void Character::affiche(sf::RenderWindow& app)
 
     //m_sprite.SetPosition(pos);
     app.draw(m_sprite);
-
-    //TODO: mettre ça autrepart
-    move();
 }
 
 void Character::setPosition(sf::Vector2i pos)

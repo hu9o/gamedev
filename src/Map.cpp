@@ -161,6 +161,7 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
             maCase->setGround(caseTerr["xpos"].GetInt(),
                               caseTerr["ypos"].GetInt());
 
+
             coutSol = caseTerr["cost"].GetInt();
 
 
@@ -187,6 +188,7 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
                                               caseObj["centery"].GetInt());
 
                     coutObj += caseObj["cost"].GetInt();
+                    maCase->setAutoTile(caseObj.HasMember("auto")? caseObj["auto"].GetBool():false);
                 }
                 else
                 {
@@ -216,6 +218,7 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
                     }
 
                     coutObj += caseObj["cost"].GetInt();
+                    maCase->setAutoTile(caseObj.HasMember("auto")? caseObj["auto"].GetBool():false);
                 }
             }
 
@@ -304,12 +307,10 @@ void Map::affiche(sf::RenderWindow& app)
     {
         for (int j = 0; j<m_h; j++)
         {
-            app.draw(getCaseAt(i, j)->getTerrain());
+            Case* c = getCaseAt(i, j);
 
-            if(getCaseAt(i, j)->hasObject())
-            {
-                app.draw(getCaseAt(i, j)->getObjet());
-            }
+            if (c)
+                c->affiche(app);
         }
     }
 

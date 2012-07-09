@@ -27,7 +27,9 @@ class Case
         Case(Map& map, int x, int y);
         virtual ~Case();
 
-        void setTex(sf::Texture *m_tile);
+        void affiche(sf::RenderWindow& app);
+
+        void setTex(sf::Texture *tex);
         void setPos(float x, float y);
         sf::Vector2i getPos();
 
@@ -35,6 +37,7 @@ class Case
         void setGround(int x, int y);
         void setObject(int x, int y, int w = 1, int h = 1);
         void setClean(bool clean);
+        void setAutoTile(bool autoTile = true);
 
         sf::Sprite getTerrain();
         sf::Sprite getObjet();
@@ -69,9 +72,13 @@ class Case
         ///Pollué ou pas
         bool m_isClean;
 
+        bool m_autoTile;
+
         sf::Vector2i relativeObjectImagePos;
 
         /// Sprites du terrain et de l'objet (éventuel)
         sf::Sprite m_terrain;
         sf::Sprite m_objet;
+
+        sf::Texture* m_texture;
 };
