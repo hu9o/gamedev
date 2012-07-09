@@ -51,6 +51,19 @@ Map::Map(int w, int h) :
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
 
+    ///Barre d'XP
+
+    ///Cadre
+    m_expBarImg.loadFromFile("gfx/expbar.png");
+    m_expBar.setTexture(m_expBarImg);
+    m_expBar.setPosition(550,20);
+    m_expBar.setTextureRect(sf::IntRect(0,0,200,20));
+
+    ///Contenu
+    m_expBarBisImg.loadFromFile("gfx/expbar.png");
+    m_expBarBis.setTexture(m_expBarBisImg);
+    m_expBarBis.setPosition(550,20);
+    m_expBarBis.setTextureRect(sf::IntRect(0,20,0,20));
 }
 
 Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
@@ -270,6 +283,20 @@ Map::Map(std::string nom) : m_map(NULL), m_character(NULL)
 
     m_cursImg.loadFromFile("gfx/curs.png");
     m_curs.setTexture(m_cursImg);
+
+    ///Barre d'XP
+
+    ///Cadre
+    m_expBarImg.loadFromFile("gfx/expbar.png");
+    m_expBar.setTexture(m_expBarImg);
+    m_expBar.setPosition(550,20);
+    m_expBar.setTextureRect(sf::IntRect(0,0,200,20));
+
+    ///Contenu
+    m_expBarBisImg.loadFromFile("gfx/expbar.png");
+    m_expBarBis.setTexture(m_expBarBisImg);
+    m_expBarBis.setPosition(550,20);
+    m_expBarBis.setTextureRect(sf::IntRect(0,20,0,20));
 }
 
 Map::~Map()
@@ -317,6 +344,11 @@ void Map::affiche(sf::RenderWindow& app)
     /// Affiche le curseur
 
     app.draw(m_curs);
+
+    /// Affiche la barre d'expérience
+    m_expBarBis.setTextureRect(sf::IntRect(0,20,(m_character->getExp()*2)%200,20));
+    app.draw(m_expBarBis);
+    app.draw(m_expBar);
 
     /// Affiche les entités
 
