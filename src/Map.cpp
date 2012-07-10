@@ -58,7 +58,7 @@ Map::Map(int w, int h) :
     initXP();
 }
 */
-Map::Map(std::string nom) : m_map(NULL), m_messageBox(*this), m_character(NULL)
+Map::Map(std::string nom) : m_map(NULL), m_messageBox(*this), m_character(NULL), m_mapView(sf::FloatRect(0, 0, 800, 600))
 {
     m_w = 0;
     m_h = 0;
@@ -344,6 +344,12 @@ void Map::loadTileset(std::string path)
 
 void Map::affiche(sf::RenderWindow& app)
 {
+    /// Vue pour le scrolling
+    sf::Vector2i mvt = m_character->getDisplayPos();
+
+    m_mapView.setCenter(mvt.x, mvt.y);
+    app.setView(m_mapView);
+
     /// Affiche les cases
 
     for (int i = 0; i<m_w; i++)
@@ -360,6 +366,7 @@ void Map::affiche(sf::RenderWindow& app)
     /// Affiche le curseur
 
     app.draw(m_curs);
+    //m_mapView.move(0, 1);
 
     /// Affiche les entités
 
@@ -379,8 +386,10 @@ void Map::affiche(sf::RenderWindow& app)
         (*it)->move();
     }
 
-    m_messageBox.display(app);
+    /// On revient à la vue par défaut pour dessiner le HUD
+    app.setView(app.getDefaultView());
 
+    m_messageBox.display(app);
 
     /// Affiche la barre d'expérience
     std::stringstream ss;
@@ -449,13 +458,25 @@ void Map::display(std::string msg)
 
 
 
-void Map::mouseMove(sf::Event evt)
+void Map::mouseMove(sf::Event evt, sf::RenderWindow& app)
 {
-    setCursorPos(sf::Vector2f(evt.mouseMove.x, evt.mouseMove.y));
+    /// Coordonnées sur l'écran vers coords sur la vue
+
+    m_cursRealPos.x = evt.mouseMove.x;
+    m_cursRealPos.y = evt.mouseMove.y;
+
+    mouseMove(app);
+}
+void Map::mouseMove(sf::RenderWindow& app)
+{
+    /// Coordonnées sur l'écran vers coords sur la vue
+
+    setCursorPos(app.convertCoords(sf::Vector2i(m_cursRealPos), m_mapView));
 }
 
 void Map::setCursorPos(sf::Vector2f v)
 {
+
     /// Coords normales
 
     fromIso(v);
@@ -468,6 +489,11 @@ void Map::setCursorPos(sf::Vector2f v)
 
     sf::Vector2f v2(m_cursPos.x, m_cursPos.y);
     toIso(v2);
+
+    // easing!
+    //sf::Vector2f currCursPos = m_curs.getPosition();
+    //m_curs.setPosition(currCursPos.x + (v2.x-currCursPos.x)/20, currCursPos.y + (v2.y-currCursPos.y)/2);
+
     m_curs.setPosition(v2);
 }
 

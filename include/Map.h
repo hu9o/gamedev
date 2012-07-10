@@ -43,7 +43,8 @@ class Map
 
         /// handles mouse events
         void mouseDown(sf::Event evt);
-        void mouseMove(sf::Event evt);
+        void mouseMove(sf::Event evt, sf::RenderWindow& app);
+        void mouseMove(sf::RenderWindow& app);
 
         /// la case est-elle traversable?
         bool isWalkable(int x, int y);
@@ -126,7 +127,7 @@ class Map
 
             void show(std::string msg)
             {
-                m_counter = 48;
+                m_counter = 68;
                  m_text.setString(msg);
                  m_text.setPosition(10, 10);
                  m_text.setFont(m_font);
@@ -140,9 +141,9 @@ class Map
                  // Draw it
                  if (m_counter > 0)
                  {
-                     if (m_counter < 44)
+                     if (m_counter < 64)
                      {
-                         m_text.setPosition(10, 10 - (m_counter < 34? (m_counter < 5? 5-m_counter : 0 )*2 : m_counter-34)*3);
+                         m_text.setPosition(10, 10 - (m_counter < 54? (m_counter < 5? 5-m_counter : 0 )*2 : m_counter-54)*3);
                         app.draw(m_text);
                      }
                     m_counter--;
@@ -173,6 +174,7 @@ class Map
         sf::Sprite m_curs;
         sf::Texture m_cursImg;
         sf::Vector2i m_cursPos;
+        sf::Vector2f m_cursRealPos;
 
         ///Je sais, c'est moche, mais j'ai pas osé créer une classe
         sf::Texture m_expBarTex;
@@ -187,6 +189,7 @@ class Map
         Character* m_character;
 
         sf::Font m_font;
+        sf::View m_mapView;
 
         // MÉTHODES
 

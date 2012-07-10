@@ -1,5 +1,6 @@
 #include "Case.h"
 #include "Map.h"
+#include "Character.h"
 
 Case::Case(Map& map, int x, int y) :
     m_map(map),
@@ -175,7 +176,7 @@ void Case::setTerrainCost(int cost)
     m_terrainCost = cost;
 }
 
-bool Case::activate()
+bool Case::activate(Character& chara)
 {
     bool actionPerformed = false;
     std::cout << "active!" << std::endl;
@@ -188,12 +189,15 @@ bool Case::activate()
             m_objectCost = 0;
             m_isClean = true;
             actionPerformed = true;
+
+            chara.earnXP(10);
         }
 
         if(m_triggerable)
         {
             m_triggered = !m_triggered;
             std::cout << (m_triggered? "flip":"flop") << std::endl;
+            actionPerformed = true;
         }
     }
 

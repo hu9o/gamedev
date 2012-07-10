@@ -38,6 +38,8 @@ class Character : public Entity
         void activateAt(sf::Vector2i pos);
         void lookAt(sf::Vector2i pos);
 
+        void earnXP(int amount);
+
     protected:
         sf::Texture m_image;
         sf::Sprite m_sprite;

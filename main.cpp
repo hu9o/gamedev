@@ -9,38 +9,39 @@ extern const int SCREEN_H = 600;
 int main()
 {
     // Create the main window
-    sf::RenderWindow App(sf::VideoMode(SCREEN_W, SCREEN_H), "Projet Gamedev");
-    App.setFramerateLimit(25);
+    sf::RenderWindow app(sf::VideoMode(SCREEN_W, SCREEN_H), "Projet Gamedev");
+    app.setFramerateLimit(25);
 
     //Chargement de la map (à partir d'un fichier)
     Map carte("default-map");
 
     // Start the game loop
-    while (App.isOpen())
+    while (app.isOpen())
     {
         // Process events
         sf::Event evt;
-        while (App.pollEvent(evt))
+        while (app.pollEvent(evt))
         {
             // Close window : exit
             if (evt.type == sf::Event::Closed)
-                App.close();
+                app.close();
 
             if (evt.type == sf::Event::MouseButtonPressed)
                 carte.mouseDown(evt);
 
             if (evt.type == sf::Event::MouseMoved)
-                carte.mouseMove(evt);
+                carte.mouseMove(evt, app);
         }
 
         // Clear screen
-        App.clear();
+        app.clear();
 
         // Draw the sprite
-        carte.affiche(App);
+        carte.affiche(app);
+        carte.mouseMove(app);
 
         // Update the window
-        App.display();
+        app.display();
     }
 
     return EXIT_SUCCESS;

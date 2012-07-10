@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 class Map;
+class Character;
 
 /**
   * Classe Case
@@ -50,7 +51,7 @@ class Case
 
         void setRelativeObjectImagePos(int x, int y);
 
-        bool activate();
+        bool activate(Character& chara);
         bool isClean();
         void setTrigger(bool val);
         bool isTriggered();

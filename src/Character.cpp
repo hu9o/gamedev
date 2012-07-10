@@ -151,27 +151,31 @@ void Character::move()
 
             if (m_caseToActivate != NULL)
             {
-                if(m_caseToActivate->activate())
+                if(m_caseToActivate->activate(*this))
                 {
-                    std::stringstream ss;
-                    ss << "+10px";
-
-                    m_exp += 10;
-
-                    if (m_exp >= m_maxExp)
-                    {
-                        m_exp -= m_maxExp;
-                        m_maxExp *= 1.2;
-                        m_lvl++;
-
-                        ss << " : LEVEL UP!";
-                    }
-
-                    m_map.display(ss.str());
                 }
             }
         }
     }
+}
+
+void Character::earnXP(int amount)
+{
+    std::stringstream ss;
+    ss << "+10px";
+
+    m_exp += amount;
+
+    if (m_exp >= m_maxExp)
+    {
+        m_exp -= m_maxExp;
+        m_maxExp *= 1.2;
+        m_lvl++;
+
+        ss << " : LEVEL UP!";
+    }
+
+    m_map.display(ss.str());
 }
 
 sf::Vector2f Character::spritePos(sf::Vector2i v)
@@ -209,7 +213,7 @@ void Character::activateAt(sf::Vector2i pos)
     if (c != NULL)
     {
         lookAt(pos);
-        c->activate();
+        c->activate(*this);
     }
 }
 
