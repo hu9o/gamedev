@@ -35,7 +35,7 @@ class Case
         sf::Vector2i getPos();
 
         /// Situe le terrain et l'objet de la case sur le tileset (et non sur la map)
-        void setGround(int x, int y);
+        void setGround(int x, int y, std::string name);
         void setObject(std::string name, int x, int y, int w = 1, int h = 1);
         void setClean(bool clean);
         void setAutoTile(bool autoTile = true);
@@ -45,6 +45,7 @@ class Case
 
         bool hasObject();
         bool hasObject(std::string& name);
+        std::string getTerrainName();
         bool isWalkable();
         int getCost();
         void setObjectCost(int cost);
@@ -89,4 +90,5 @@ class Case
         bool m_triggerable;
         bool m_triggered;
         std::string m_objName;
+        std::string m_terrainName;
 };

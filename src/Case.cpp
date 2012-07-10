@@ -28,6 +28,72 @@ void Case::affiche(sf::RenderWindow& app)
 {
     app.draw(getTerrain());
 
+    if (true)
+    {
+        sf::Sprite corner(*m_texture);
+
+        sf::IntRect r(Case::WIDTH, Case::HEIGHT, Case::WIDTH/2, Case::HEIGHT/2);
+        corner.setTextureRect(r);
+
+        Case* ctop = m_map.getCaseAt(m_intpos.x, m_intpos.y-1);
+        Case* cbottom = m_map.getCaseAt(m_intpos.x, m_intpos.y+1);
+        Case* cleft = m_map.getCaseAt(m_intpos.x-1, m_intpos.y);
+        Case* cright = m_map.getCaseAt(m_intpos.x+1, m_intpos.y);
+        Case* ctopleft = m_map.getCaseAt(m_intpos.x-1, m_intpos.y-1);
+        Case* ctopright = m_map.getCaseAt(m_intpos.x+1, m_intpos.y-1);
+        Case* cbottomleft = m_map.getCaseAt(m_intpos.x-1, m_intpos.y+1);
+        Case* cbottomright = m_map.getCaseAt(m_intpos.x+1, m_intpos.y+1);
+
+        std::string top = ctop? ctop->getTerrainName() : "";
+        std::string bottom = cbottom? cbottom->getTerrainName() : "";
+        std::string left = cleft? cleft->getTerrainName() : "";
+        std::string right = cright? cright->getTerrainName() : "";
+
+        if (top != "" && top != m_terrainName && top == left && (!ctopleft || ctopleft->getTerrainName() != m_terrainName))
+        {
+            r.left = ctop->getTerrain().getTextureRect().left;
+            r.top = ctop->getTerrain().getTextureRect().top + Case::HEIGHT;
+
+            corner.setPosition(m_pos.x + Case::WIDTH/4, m_pos.y);
+
+            corner.setTextureRect(r);
+            app.draw(corner);
+        }
+
+        if (top != "" && top != m_terrainName && top == right && (!ctopright || ctopright->getTerrainName() != m_terrainName))
+        {
+            r.left = ctop->getTerrain().getTextureRect().left + Case::WIDTH/2;
+            r.top = ctop->getTerrain().getTextureRect().top + Case::HEIGHT;
+
+            corner.setPosition(m_pos.x + Case::WIDTH/2, m_pos.y + Case::HEIGHT/4);
+
+            corner.setTextureRect(r);
+            app.draw(corner);
+        }
+
+        if (bottom != "" && bottom != m_terrainName && bottom == left && (!cbottomleft || cbottomleft->getTerrainName() != m_terrainName))
+        {
+            r.left = cbottom->getTerrain().getTextureRect().left;
+            r.top = cbottom->getTerrain().getTextureRect().top + Case::HEIGHT + Case::HEIGHT/2;
+
+            corner.setPosition(m_pos.x, m_pos.y + Case::HEIGHT/4);
+
+            corner.setTextureRect(r);
+            app.draw(corner);
+        }
+
+        if (bottom != "" && bottom != m_terrainName && bottom == right && (!cbottomright || cbottomright->getTerrainName() != m_terrainName))
+        {
+            r.left = cbottom->getTerrain().getTextureRect().left + Case::WIDTH/2;
+            r.top = cbottom->getTerrain().getTextureRect().top + Case::HEIGHT + Case::HEIGHT/2;
+
+            corner.setPosition(m_pos.x + Case::WIDTH/4, m_pos.y + Case::HEIGHT/2);
+
+            corner.setTextureRect(r);
+            app.draw(corner);
+        }
+    }
+
     if(hasObject())
     {
         if (!m_autoTile && !m_triggerable)
@@ -124,8 +190,10 @@ void Case::setRelativeObjectImagePos(int x, int y)
     relativeObjectImagePos.y = y * Case::HEIGHT;
 }
 
-void Case::setGround(int x, int y)
+void Case::setGround(int x, int y, std::string name)
 {
+    m_terrainName = name;
+
     // Zone du tileset à afficher
     m_terrain.setTextureRect(sf::IntRect(x*Case::WIDTH,
                                          y*Case::HEIGHT,
@@ -164,6 +232,11 @@ bool Case::hasObject()
 bool Case::hasObject(std::string& name)
 {
     return m_objName == name;
+}
+
+std::string Case::getTerrainName()
+{
+    return m_terrainName;
 }
 
 bool Case::isWalkable()

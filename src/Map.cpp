@@ -164,7 +164,8 @@ Map::Map(std::string nom) : m_map(NULL), m_messageBox(*this), m_character(NULL),
             /// On lira le tileset selon xpos et ypos
 
             maCase->setGround(caseTerr["xpos"].GetInt(),
-                              caseTerr["ypos"].GetInt());
+                              caseTerr["ypos"].GetInt(),
+                              caseLine["terr"].GetString());
 
 
             coutSol = caseTerr["cost"].GetInt();
@@ -288,14 +289,14 @@ Map::Map(std::string nom) : m_map(NULL), m_messageBox(*this), m_character(NULL),
     m_messageBox.setFont(m_font);
 
     ///Barre d'XP
-    initXP();
+    initHUD();
 
 
 	new Character(*this);
     m_character->setPosition(sf::Vector2i(objetMap["startpos"]["x"].GetInt(), objetMap["startpos"]["y"].GetInt()));
 }
 
-void Map::initXP()
+void Map::initHUD()
 {
     m_expBarVal = 0;
 
@@ -315,6 +316,8 @@ void Map::initXP()
     m_expBarLevelText.setFont(m_font);
 
     m_lifeBarVal = 0;
+
+    /// Barre de vie
 
     ///Cadre
     m_lifeBarBorder.setTexture(m_expBarTex);
@@ -428,6 +431,7 @@ void Map::affiche(sf::RenderWindow& app)
     ss.str("");
     ss.clear();
 
+    /// Affiche la barre de vie
     ratio = ((float)m_character->getLife()/m_character->getMaxLife());
     if (ratio > 0.99)
         m_lifeBarVal = ratio*200;
