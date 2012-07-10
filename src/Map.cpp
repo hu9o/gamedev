@@ -385,7 +385,6 @@ void Map::affiche(sf::RenderWindow& app)
     /// Affiche le curseur
 
     app.draw(m_curs);
-    //m_mapView.move(0, 1);
 
     /// Affiche les entités
 
@@ -408,6 +407,7 @@ void Map::affiche(sf::RenderWindow& app)
     /// On revient à la vue par défaut pour dessiner le HUD
     app.setView(app.getDefaultView());
 
+    /// messages
     m_messageBox.display(app);
 
     /// Affiche la barre d'expérience

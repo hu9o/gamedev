@@ -120,20 +120,21 @@ class Map
 
         struct MessageBox
         {
-            MessageBox(Map& map) : m_map(map)
+            MessageBox(Map& map) : m_map(map), m_bg(sf::Vector2f(800, 22))
             {
-                 m_counter = 0;
+                m_counter = 0;
+                m_bg.setFillColor(sf::Color(0, 0, 0, 192));
             }
 
             void show(std::string msg)
             {
                 m_counter = 68;
-                 m_text.setString(msg);
-                 m_text.setPosition(10, 10);
-                 m_text.setFont(m_font);
-                 m_text.setCharacterSize(16);
+                m_text.setString(msg);
+                m_text.setPosition(10, 10);
+                m_text.setFont(m_font);
+                m_text.setCharacterSize(16);
 
-                 std::cout << "AFFICHE!" << std::endl;
+                std::cout << "AFFICHE!" << std::endl;
             }
 
             void display(sf::RenderWindow& app)
@@ -141,11 +142,13 @@ class Map
                  // Draw it
                  if (m_counter > 0)
                  {
-                     if (m_counter < 64)
-                     {
-                         m_text.setPosition(10, 10 - (m_counter < 54? (m_counter < 5? 5-m_counter : 0 )*2 : m_counter-54)*3);
+                    if (m_counter < 64)
+                    {
+                        m_text.setPosition(10, 10 - (m_counter < 54? (m_counter < 5? 5-m_counter : 0 )*2 : m_counter-54)*3);
+                        m_bg.setPosition(0, m_text.getPosition().y-2);
+                        app.draw(m_bg);
                         app.draw(m_text);
-                     }
+                    }
                     m_counter--;
                 }
             }
@@ -159,6 +162,7 @@ class Map
             sf::Text m_text;
             int m_counter;
             Map& m_map;
+            sf::RectangleShape m_bg;
         };
 
 

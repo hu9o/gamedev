@@ -62,9 +62,12 @@
 
 	"NPCs" :
 	[
-		{ "name":"MR LOBSTER", "xpos":10, "ypos":16, "skin":2, "message":["Salut!", "Regarde-moi tout ce beurk", "Ca pue vraiment tres fort!", "Si seulement quelqun pouvait nettoyer ça..."] },
-		{ "name":"GANJA FARMER", "xpos":18, "ypos":12, "skin":4, "message":["Bonjour!", "Je vends de l'herbe medicinale, vous en voulez?"] },
-		{ "name":"NUTCRACKER", "xpos":17, "ypos":23, "skin":21, "message":["Je sais compter jusqu'a cent!", "un...", "deux...", "trois...", "quatre...", "cinq...", "six...", "sept...", "huit...", "neuf...", "dix...", "onze...", "douze...", "treize...", "quatorze...", "quinze...", "seize...", "dix-sept...", "dix-huit...", "dix-neuf...", "vingt...", "vingt et un...", "vingt-deux...", "vingt-trois...", "vingt-quatre...", "vingt-cinq...", "vingt-six...", "vingt-sept...", "vingt-huit...", "vingt-neuf...", "vingt-dix...", "vingt-douze...", "euh...", "cinquante-quinze?", "je ne suis pas sur de la suite..."] }
+		{ "name":"MR LOBSTER", "xpos":10, "ypos":16, "skin":2, "message":["BOnjour!", "Regarde-moi tout ce beurk", "Ca pue vraiment tres fort!", "Si seulement quelq un pouvait nettoyer ca..."] },
+		{ "name":"GANJA FARMER", "xpos":18, "ypos":12, "skin":38, "message":["Salut a toi!", "Le desert s'etend, et la vegetation se fait rare", "Mais mon herbe et de premiere qualite, vas-y goute-donc!", "Alors, c est pas merveilleux ca?"] },
+		{ "name":"NUTCRACKER", "xpos":17, "ypos":23, "skin":21, "message":["Je sais compter jusqu'a cent!", "un...", "deux...", "trois...", "quatre...", "cinq...", "six...", "sept...", "huit...", "neuf...", "dix...", "onze...", "douze...", "treize...", "quatorze...", "quinze...", "seize...", "dix-sept...", "dix-huit...", "dix-neuf...", "vingt...", "vingt et un...", "vingt-deux...", "vingt-trois...", "vingt-quatre...", "vingt-cinq...", "vingt-six...", "vingt-sept...", "vingt-huit...", "vingt-neuf...", "vingt-dix...", "vingt-douze...", "euh...", "cinquante-quinze?", "je ne suis pas sur de la suite..."] },
+		{ "name":"MR SEMAPHORE", "xpos":2, "ypos":24, "skin":27, "message":["Ah ce rechauffement planetaire!", "Nous etions sur le point d'arriver aux oasis...", "...mais mon ami n a pas survecu", "il s est change instantanement en squelette...", "Decidement, ce monde manque cruelement d'animations", "Cette situation ne peut plus durer!"] },
+		{ "name":"MME MARELLE", "xpos":26, "ypos":24, "skin":16, "message":["Cette oasis est un endroit beni!", "Je peux me baigner toute la journee...", "...sans me soucier de ma facture d eau", "Mmmh, qu est-ce que j aime ca, etre toute mouillee!"] },
+		{ "name":"KOUPKOUP", "xpos":19, "ypos":5, "skin":22, "message":["Tu as vu ma belle grosse epee?", "Je te raconte pas tout ce que j ai empale avec!", "Elle est douce... je l astique tous les jours", "Beaucoup la gardent dans leur fourreau,", "mais je prefere la sortir et l avoir en permanence dans la main", "Trouves-toi une epee, ca vaut le coup!"] }
 
 	],
 
