@@ -46,19 +46,22 @@ void Case::affiche(sf::RenderWindow& app)
         else if (m_autoTile)
         {
             sf::Sprite plop(*m_texture);
-            sf::IntRect r(0*Case::WIDTH + Case::WIDTH/2,
-                                 5*Case::HEIGHT + Case::HEIGHT/2,
-                                 Case::WIDTH/2,
-                                 Case::HEIGHT/2);
+
+
+            sf::IntRect r = m_objet.getTextureRect();
+            r.left += Case::WIDTH/2;
+            r.top += Case::HEIGHT/2;
+            r.width = Case::WIDTH/2;
+            r.height = Case::HEIGHT/2;
 
             sf::Vector2i& pos = m_pos;
 
             bool test = true;
 
-            bool top = test && m_map.getCaseAt(m_intpos.x, m_intpos.y-1)->isClean();
-            bool bottom = test && m_map.getCaseAt(m_intpos.x, m_intpos.y+1)->isClean();
-            bool left = test && m_map.getCaseAt(m_intpos.x-1, m_intpos.y)->isClean();
-            bool right = test && m_map.getCaseAt(m_intpos.x+1, m_intpos.y)->isClean();
+            bool top = test && !m_map.getCaseAt(m_intpos.x, m_intpos.y-1)->hasObject(m_objName);
+            bool bottom = test && !m_map.getCaseAt(m_intpos.x, m_intpos.y+1)->hasObject(m_objName);
+            bool left = test && !m_map.getCaseAt(m_intpos.x-1, m_intpos.y)->hasObject(m_objName);
+            bool right = test && !m_map.getCaseAt(m_intpos.x+1, m_intpos.y)->hasObject(m_objName);
 
             plop.setTextureRect(sf::IntRect(r.left - (left? Case::WIDTH/2 : 0), r.top - (top? Case::HEIGHT/2 : 0), r.width, r.height));
             plop.setPosition(pos.x + 12, pos.y);
@@ -130,8 +133,10 @@ void Case::setGround(int x, int y)
                                          Case::HEIGHT));
 }
 
-void Case::setObject(int x, int y, int w, int h)
+void Case::setObject(std::string name, int x, int y, int w, int h)
 {
+    m_objName = name;
+
     // Zone du tileset à afficher
     m_objet.setTextureRect(sf::IntRect(x*Case::WIDTH,
                                        y*Case::HEIGHT,
@@ -154,6 +159,11 @@ sf::Sprite& Case::getObjet()
 bool Case::hasObject()
 {
     return m_isObject;
+}
+
+bool Case::hasObject(std::string& name)
+{
+    return m_objName == name;
 }
 
 bool Case::isWalkable()
@@ -186,6 +196,7 @@ bool Case::activate(Character& chara)
         if(!m_isClean)
         {
             m_isObject = false;
+            m_objName = "";
             m_objectCost = 0;
             m_isClean = true;
             actionPerformed = true;

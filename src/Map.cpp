@@ -199,14 +199,16 @@ Map::Map(std::string nom) : m_map(NULL), m_messageBox(*this), m_character(NULL),
                 {
                     if (caseObj.HasMember("width") && caseObj.HasMember("height"))
                     {
-                        maCase->setObject(caseObj["xpos"].GetInt(),
+                        maCase->setObject(caseObjArray[k].GetString(),
+                                          caseObj["xpos"].GetInt(),
                                           caseObj["ypos"].GetInt(),
                                           caseObj["width"].GetInt(),
                                           caseObj["height"].GetInt());
                     }
                     else
                     {
-                        maCase->setObject(caseObj["xpos"].GetInt(),
+                        maCase->setObject(caseObjArray[k].GetString(),
+                                          caseObj["xpos"].GetInt(),
                                           caseObj["ypos"].GetInt());
                     }
 

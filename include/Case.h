@@ -36,7 +36,7 @@ class Case
 
         /// Situe le terrain et l'objet de la case sur le tileset (et non sur la map)
         void setGround(int x, int y);
-        void setObject(int x, int y, int w = 1, int h = 1);
+        void setObject(std::string name, int x, int y, int w = 1, int h = 1);
         void setClean(bool clean);
         void setAutoTile(bool autoTile = true);
 
@@ -44,6 +44,7 @@ class Case
         sf::Sprite& getObjet();
 
         bool hasObject();
+        bool hasObject(std::string& name);
         bool isWalkable();
         int getCost();
         void setObjectCost(int cost);
@@ -87,4 +88,5 @@ class Case
 
         bool m_triggerable;
         bool m_triggered;
+        std::string m_objName;
 };
