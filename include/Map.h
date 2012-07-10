@@ -183,6 +183,11 @@ class Map
         sf::Text m_expBarLevelText;
         int m_expBarVal;
 
+        sf::Sprite m_lifeBarBorder;
+        sf::Sprite m_lifeBarFill;
+        sf::Text m_lifeBarLevelText;
+        int m_lifeBarVal;
+
         sf::Clock m_clock;
 
         std::list<Entity*> m_entities;

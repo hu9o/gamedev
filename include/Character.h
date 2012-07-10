@@ -34,6 +34,8 @@ class Character : public Entity
         sf::Vector2i getDisplayPos();
         int getExp();
         int getMaxExp();
+        int getLife();
+        int getMaxLife();
         int getLevel();
         void activateAt(sf::Vector2i pos);
         void lookAt(sf::Vector2i pos);
@@ -54,6 +56,8 @@ class Character : public Entity
         int m_exp;
         int m_maxExp;
         int m_lvl;
+        int m_life;
+        int m_maxLife;
 
         std::deque<sf::Vector2i> m_movementQueue;
 

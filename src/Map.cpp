@@ -303,17 +303,31 @@ void Map::initXP()
     m_expBarTex.loadFromFile("gfx/expbar.png");
 
     m_expBarBorder.setTexture(m_expBarTex);
-    m_expBarBorder.setPosition(300, 566);
+    m_expBarBorder.setPosition(300, 542);
     m_expBarBorder.setTextureRect(sf::IntRect(0,0,200,20));
 
     ///Contenu
     m_expBarFill.setTexture(m_expBarTex);
-    m_expBarFill.setPosition(300, 566);
-    m_expBarFill.setTextureRect(sf::IntRect(0,20,0,20));
+    m_expBarFill.setPosition(300, 542);
 
     /// Texte
     m_expBarLevelText.setCharacterSize(12);
     m_expBarLevelText.setFont(m_font);
+
+    m_lifeBarVal = 0;
+
+    ///Cadre
+    m_lifeBarBorder.setTexture(m_expBarTex);
+    m_lifeBarBorder.setPosition(300, 566);
+    m_lifeBarBorder.setTextureRect(sf::IntRect(0,0,200,20));
+
+    ///Contenu
+    m_lifeBarFill.setTexture(m_expBarTex);
+    m_lifeBarFill.setPosition(300, 566);
+
+    /// Texte
+    m_lifeBarLevelText.setCharacterSize(12);
+    m_lifeBarLevelText.setFont(m_font);
 }
 
 
@@ -395,14 +409,38 @@ void Map::affiche(sf::RenderWindow& app)
 
     /// Affiche la barre d'expérience
     std::stringstream ss;
-    m_expBarVal = m_expBarVal + (((float)m_character->getExp()/m_character->getMaxExp())*200 - m_expBarVal)/5;
+    float ratio;
+
+    ratio = ((float)m_character->getExp()/m_character->getMaxExp());
+    if (ratio > 0.99)
+        m_expBarVal = ratio*200;
+    else
+        m_expBarVal = m_expBarVal + (ratio*200 - m_expBarVal)/5;
+
     ss << "Lvl "<<m_character->getLevel()<< " - XP: " <<m_character->getExp()<<"/"<<m_character->getMaxExp();
     m_expBarFill.setTextureRect(sf::IntRect(0,20,m_expBarVal,20));
     m_expBarLevelText.setString(ss.str());
-    m_expBarLevelText.setPosition((int)(400 - m_expBarLevelText.getLocalBounds().width/2), 569);
+    m_expBarLevelText.setPosition((int)(400 - m_expBarLevelText.getLocalBounds().width/2), 545);
     app.draw(m_expBarBorder);
     app.draw(m_expBarFill);
     app.draw(m_expBarLevelText);
+
+    ss.str("");
+    ss.clear();
+
+    ratio = ((float)m_character->getLife()/m_character->getMaxLife());
+    if (ratio > 0.99)
+        m_lifeBarVal = ratio*200;
+    else
+        m_lifeBarVal = m_lifeBarVal + (ratio*200 - m_lifeBarVal)/5;
+
+    ss << m_character->getLife()<< "/" <<m_character->getMaxLife()<<" PV";
+    m_lifeBarFill.setTextureRect(sf::IntRect(0,40,m_lifeBarVal,20));
+    m_lifeBarLevelText.setString(ss.str());
+    m_lifeBarLevelText.setPosition((int)(400 - m_lifeBarLevelText.getLocalBounds().width/2), 569);
+    app.draw(m_lifeBarBorder);
+    app.draw(m_lifeBarFill);
+    app.draw(m_lifeBarLevelText);
 }
 
 void Map::registerEntity(Entity& e)

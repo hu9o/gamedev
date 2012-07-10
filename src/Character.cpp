@@ -31,7 +31,8 @@ void Character::init()
     m_exp = 0;
     m_maxExp = 100;
     m_lvl = 1;
-
+    m_maxLife = 100;
+    m_life = m_maxLife;
 
     m_caseToActivate = NULL;
 }
@@ -199,6 +200,14 @@ int Character::getExp()
 int Character::getMaxExp()
 {
     return m_maxExp;
+}
+int Character::getLife()
+{
+    return m_life;
+}
+int Character::getMaxLife()
+{
+    return m_maxLife;
 }
 
 int Character::getLevel()
